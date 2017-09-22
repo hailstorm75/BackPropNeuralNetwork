@@ -7,8 +7,8 @@
     <ProjectGuid>{735BF9E0-C2F1-4064-8D22-E9C7F993BBEC}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BackPropNeuralNetworkCS</RootNamespace>
-    <AssemblyName>BackPropNeuralNetworkCS</AssemblyName>
+    <RootNamespace>NeuralNetworkFacadeCS</RootNamespace>
+    <AssemblyName>NeuralNetworkFacadeCS</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -55,7 +55,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BackPropNeuralNetworkCPP\BackPropNeuralNetworkCPP.vcxproj">
       <Project>{a4f42f62-c2ae-4fa7-ba02-0248f24849ff}</Project>
-      <Name>BackPropNeuralNetworkCPP</Name>
+      <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

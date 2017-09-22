@@ -90,7 +90,7 @@ private:
   /**
    * \brief Neural network learning rate
    */
-  const double learningRate = 0.03;
+  const double learningRate = 0.02;
 
 #pragma endregion
 };

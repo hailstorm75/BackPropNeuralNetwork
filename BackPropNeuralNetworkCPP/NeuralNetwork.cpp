@@ -77,7 +77,7 @@ double* NeuralNetwork::FeedForward(double* inputs)
 
   layers[0].FeedForward(inputs);
 
-  for (auto l = 1; l < layers.size(); l++)
+  for (auto l = 1; l < layersLength; l++)
     layers[l].FeedForward(layers[l - 1].outputs);
 
   return layers[layersLength - 1].outputs;

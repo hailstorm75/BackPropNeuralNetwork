@@ -2,12 +2,13 @@
 #include "NeuralNetworkWrapper.h"
 
 
-NeuralNetworkWrapper::NeuralNetworkWrapper(int* layer, const int size)
+Wrapper::NeuralNetworkWrapper::NeuralNetworkWrapper(int* layer, const int size)
 {
-  pNN = &NeuralNetwork(layer, size);
+  NeuralNetwork net(layer, size);
+  pNN = &net;
 }
 
-void NeuralNetworkWrapper::TrainNetwork(int iterations, bool silent)
+void Wrapper::NeuralNetworkWrapper::TrainNetwork(int iterations, bool silent)
 {
 #pragma region Training data
 

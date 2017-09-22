@@ -15,9 +15,14 @@ namespace BackPropNeuralNetworkCPPTests
   public:
     wchar_t * nullpointerEx = L"Nullpointer invalid argument not caught.";
 
-    TEST_METHOD(NeuralNetwork_Constructor)
+    TEST_METHOD(NeuralNetworkTestConstructor_Null)
     {
       Assert::ExpectException<int>([] { NeuralNetwork(nullptr, 0); }, nullpointerEx);
+    }
+
+    TEST_METHOD(NeuralNetworkTestConstructor_NoSize)
+    {
+      Assert::ExpectException<int>([] { NeuralNetwork(new int[0] { }, 0); }, nullpointerEx);
     }
 
     TEST_METHOD(NeuralNetworkTest_layers)

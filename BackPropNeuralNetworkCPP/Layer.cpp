@@ -40,22 +40,20 @@ double* Layer::FeedForward(double* inputs)
 {
   if (inputs == nullptr)
     throw std::logic_error("Invalid argument -> Layer::FeedForward(...)");
-  else
+
+  this->inputs = inputs;
+
+  for (auto out = 0; out < numberOfOutputs; out++)
   {
-    this->inputs = inputs;
+    outputs[out] = 0;
 
-    for (auto out = 0; out < numberOfOutputs; out++)
-    {
-      outputs[out] = 0;
+    for (auto in = 0; in < numberOfInputs; in++)
+      outputs[out] += inputs[in] * weights[out * numberOfInputs + in];
 
-      for (auto in = 0; in < numberOfInputs; in++)
-        outputs[out] += inputs[in] * weights[out * numberOfInputs + in];
-
-      outputs[out] = tanh(outputs[out]);
-    }
-
-    return outputs;
+    outputs[out] = ActivateFunction(outputs[out]);
   }
+
+  return outputs;
 }
 
 double Layer::ActivateFunction(double value)
@@ -77,10 +75,10 @@ void Layer::BackPropOutput(double* expected) const
   int out;
 
   for (out = 0; out < numberOfOutputs; out++)
-  {
     error[out] = outputs[out] - expected[out];
+
+  for (out = 0; out < numberOfOutputs; out++)
     gamma[out] = error[out] * DeriveFunction(outputs[out]);
-  }
 
   for (out = 0; out < numberOfOutputs; out++)
     for (auto in = 0; in < numberOfInputs; in++)
@@ -97,13 +95,12 @@ void Layer::BackPropHidden(double* gammaForward, double* weightsForward) const
 
   for (out = 0; out < numberOfOutputs; out++)
   {
-    double placeholder = 0;
     gamma[out] = 0;
 
     for (in = 0; in < _msize(gammaForward) / sizeof(double); in++)
-      placeholder += gammaForward[in] * weightsForward[in * numberOfOutputs + out];
+      gamma[out] += gammaForward[in] * weightsForward[in * numberOfOutputs + out];
 
-    gamma[out] = DeriveFunction(placeholder) * placeholder;
+    gamma[out] *= DeriveFunction(outputs[out]);
   }
 
   for (out = 0; out < numberOfOutputs; out++)

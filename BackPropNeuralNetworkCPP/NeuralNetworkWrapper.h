@@ -1,17 +1,18 @@
-#pragma once
-
 #include "NeuralNetwork.h"
 //#include "NeuralNetwork.cpp"
 
 using namespace System;
 
-public ref class NeuralNetworkWrapper
+namespace Wrapper
 {
-public:
-  NeuralNetworkWrapper(int* layer, const int size);
-  void TrainNetwork(int iterations, bool silent);
-private:
-  NeuralNetwork* pNN;
-};
+  public ref class NeuralNetworkWrapper
+  {
+  public:
+    NeuralNetworkWrapper(int* layer, const int size);
+    void TrainNetwork(int iterations, bool silent);
+  private:
+    NeuralNetwork* pNN;
+  };
+}
 
 
