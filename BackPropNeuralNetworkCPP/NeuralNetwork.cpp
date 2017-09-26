@@ -34,14 +34,14 @@ void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<dou
   auto division = iterations / 100;
 
   if (!silent)
-  {        
+  {
     GetConsoleCursorInfo(outHandle, &cursorInfo);
     cursorInfo.bVisible = false;
     SetConsoleCursorInfo(outHandle, &cursorInfo);
   }
 
   for (auto iteration = 0; iteration < iterations; iteration++)
-  {    
+  {
     if (!silent) std::cout << "Training: " << static_cast<int>(iteration / division) << "%";
 
     for (auto in = 0; in < inputData.size(); in++)
@@ -51,7 +51,7 @@ void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<dou
       for (auto out = 0; out < outputData.size(); out++)
         BackPropagate(outputData[out]);
     }
-    
+
     if (!silent)
     {
       COORD cur = { 0, 0 };
@@ -69,7 +69,7 @@ void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<dou
   }
 }
 
-double* NeuralNetwork::FeedForward(double* inputs)
+void NeuralNetwork::FeedForward(double* inputs, double** retVal)
 {
   // Checking input
   if (inputs == nullptr)
@@ -80,7 +80,8 @@ double* NeuralNetwork::FeedForward(double* inputs)
   for (auto l = 1; l < layersLength; l++)
     layers[l].FeedForward(layers[l - 1].outputs);
 
-  return layers[layersLength - 1].outputs;
+  if (retVal != nullptr)  
+    *retVal = layers[layersLength - 1].outputs;
 }
 
 void NeuralNetwork::BackPropagate(double* expected)
