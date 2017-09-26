@@ -36,7 +36,7 @@ void Layer::InitilizeWeights() const
       weights[col * this->numberOfInputs + row] = distribution(generator);
 }
 
-double* Layer::FeedForward(double* inputs)
+void Layer::FeedForward(double* inputs, double** retVal)
 {
   if (inputs == nullptr)
     throw std::logic_error("Invalid argument -> Layer::FeedForward(...)");
@@ -52,8 +52,8 @@ double* Layer::FeedForward(double* inputs)
 
     outputs[out] = ActivateFunction(outputs[out]);
   }
-
-  return outputs;
+  if (retVal != nullptr)
+    *retVal = outputs;
 }
 
 double Layer::ActivateFunction(double value)
