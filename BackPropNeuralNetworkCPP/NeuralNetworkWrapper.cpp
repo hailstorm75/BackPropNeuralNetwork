@@ -8,28 +8,27 @@ Wrapper::NeuralNetworkWrapper::NeuralNetworkWrapper(int* layer, const int size)
   pNN = net;
 }
 
-void Wrapper::NeuralNetworkWrapper::TrainNetwork(int iterations, bool silent)
+void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* expectedData, int dataSetSize, int iterations, bool silent)
 {
-#pragma region Training data
+  std::vector<double*> _trainingData(0);
+  std::vector<double *> _expectedData(0);
 
-  std::vector<double *> fedData = {
-    new double[3]{ 0, 0, 0 },
-    new double[3]{ 0, 0, 1 },
-    new double[3]{ 0, 1, 0 },
-    new double[3]{ 1, 0, 0 },
-    new double[3]{ 0, 1, 1 },
-    new double[3]{ 1, 0, 1 },
-    new double[3]{ 1, 1, 0 },
-  };
+  int* layer = pNN->GetLayer();
 
-  std::vector<double *> expectedData = { new double[7]{ 0, 1, 1, 0, 1, 0, 0 } };
+  ConvertToVectorDouble(trainingData, &dataSetSize, &layer[0], &_trainingData);
+  ConvertToVectorDouble(expectedData, &dataSetSize, &layer[pNN->layersLength], &_expectedData);
 
-#pragma endregion
-
-  pNN->TrainNetwork(fedData, expectedData, iterations, silent);
+  pNN->TrainNetwork(_trainingData, _expectedData, iterations, silent);
 }
 
 void Wrapper::NeuralNetworkWrapper::FeedForward(double* inputs, double** retVal)
 {
   pNN->FeedForward(inputs, retVal);
+}
+
+void Wrapper::NeuralNetworkWrapper::ConvertToVectorDouble(double* input, int* rows, int* columns, std::vector<double*> *output)
+{
+  for (auto i = 0; i < *rows; i++)
+    for (auto j = 0; j < *columns; j++)
+      output->push_back(&input[i * *rows + j]);
 }

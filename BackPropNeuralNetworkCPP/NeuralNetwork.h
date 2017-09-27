@@ -48,11 +48,12 @@ public:
 
 #pragma endregion
 
+  int layersLength;
+
 private:
 #pragma region Fields
 
   int* layer;
-  int layersLength;
 
   std::vector<Layer> layers;
 
