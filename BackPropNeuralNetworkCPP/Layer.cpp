@@ -66,11 +66,11 @@ double Layer::DeriveFunction(double value)
   return 1 - value * value;
 }
 
-void Layer::BackPropOutput(double* expected) const
+void Layer::BackPropOutput(double* expected)
 {
   // Checking input
   if (expected == nullptr)
-    throw 2;
+    throw std::logic_error("Invalid argument -> Layer::BackPropOutput(...)");
 
   int out;
 
@@ -85,11 +85,11 @@ void Layer::BackPropOutput(double* expected) const
       weightsDelta[out * numberOfInputs + in] = gamma[out] * inputs[in];
 }
 
-void Layer::BackPropHidden(double* gammaForward, double* weightsForward) const
+void Layer::BackPropHidden(double* gammaForward, double* weightsForward)
 {
   // Checking inputs
   if (gammaForward == nullptr || weightsForward == nullptr)
-    throw 2;
+    throw std::logic_error("Invalid argument -> Layer::BackPropHidden(...)");
 
   int out, in;
 

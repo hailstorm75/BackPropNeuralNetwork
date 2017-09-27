@@ -17,12 +17,36 @@ namespace BackPropNeuralNetworkCPPTests
 
     TEST_METHOD(NeuralNetworkTestConstructor_Null)
     {
-      Assert::ExpectException<int>([] { NeuralNetwork(nullptr, 0); }, nullpointerEx);
+      bool caughtException;
+
+      try
+      {
+        NeuralNetwork(nullptr, 0);
+        caughtException = false;
+      }
+      catch (std::logic_error)
+      {
+        caughtException = true;
+      }
+
+      Assert::IsTrue(caughtException, nullpointerEx);
     }
 
     TEST_METHOD(NeuralNetworkTestConstructor_NoSize)
     {
-      Assert::ExpectException<int>([] { NeuralNetwork(new int[0] { }, 0); }, nullpointerEx);
+      bool caughtException;
+
+      try
+      {
+        NeuralNetwork(new int[0]{}, 0);
+        caughtException = false;
+      }
+      catch (std::logic_error)
+      {
+        caughtException = true;
+      }
+
+      Assert::IsTrue(caughtException, nullpointerEx);
     }
 
     TEST_METHOD(NeuralNetworkTest_layers)
@@ -33,12 +57,64 @@ namespace BackPropNeuralNetworkCPPTests
       Assert::IsTrue(CompareIntArrays(layer, net.GetLayer()), L"Array content");
     }
 
-    //TEST_METHOD(NeuralNetworkTest_BackPropagate)
-    //{
-    //  auto layer = new int[3]{ 3, 25, 1 };
-    //  NeuralNetwork net(layer, 3);
+    TEST_METHOD(NeuralNetworkTest_TrainNetwork)
+    {
+      auto layer = new int[3]{ 3, 25, 1 };
+      NeuralNetwork net(layer, 3);
 
-    //  Assert::ExpectException<int>([net] { net.BackPropagate(nullptr); });
-    //}
+      bool caughtException;
+
+      try
+      {
+        net.TrainNetwork(std::vector<double *>(0), std::vector<double *>(0), NULL, false);
+        caughtException = false;
+      }
+      catch (std::logic_error)
+      {
+        caughtException = true;
+      }
+      
+      Assert::IsTrue(caughtException, nullpointerEx);
+    }
+
+    TEST_METHOD(NeuralNetworkTest_FeedForward)
+    {
+      auto layer = new int[3]{ 3, 25, 1 };
+      NeuralNetwork net(layer, 3);
+
+      bool caughtException;
+
+      try
+      {
+        net.FeedForward(nullptr);
+        caughtException = false;
+      }
+      catch (std::logic_error)
+      {
+        caughtException = true;
+      }
+
+      Assert::IsTrue(caughtException, nullpointerEx);
+    }
+
+    TEST_METHOD(NeuralNetworkTest_BackPropagate)
+    {
+      auto layer = new int[3]{ 3, 25, 1 };
+      NeuralNetwork net(layer, 3);
+
+      bool caughtException;
+
+      try
+      {
+        net.BackPropagate(nullptr);
+        caughtException = false;
+      }
+      catch (std::logic_error)
+      {
+        caughtException = true;
+      }
+
+      Assert::IsTrue(caughtException, nullpointerEx);
+    }
   };
 }

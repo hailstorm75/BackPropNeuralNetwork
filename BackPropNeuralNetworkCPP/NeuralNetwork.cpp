@@ -8,7 +8,7 @@ NeuralNetwork::NeuralNetwork(int* layer, const int size)
 {
   // Checking inputs
   if (layer == nullptr || size == NULL)
-    throw 2;
+    throw std::logic_error("Invalid argument -> NeuralNetwork::NeuralNetwork(...)");
 
   this->layer = layer; // Copying array
   this->layersLength = size - 1; // Defining "layers" array length
@@ -24,12 +24,12 @@ NeuralNetwork::NeuralNetwork(int* layer, const int size)
 void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<double*> outputData, int iterations, bool silent)
 {
   // Checking inputs
-  if (inputData.size() == 0 || outputData.size() == 0)
-    throw 2;
+  if (inputData.size() <= 0 || outputData.size() <= 0)
+    throw std::logic_error("Invalid argument -> NeuralNetwork::TrainNetwork(...)");
 
   // Checking vectors
   if (inputData[0] == nullptr || outputData[0] == nullptr)
-    throw 2;
+    throw std::logic_error("Invalid argument -> NeuralNetwork::TrainNetwork(...)");
 
   auto division = iterations / 100;
 
@@ -73,7 +73,7 @@ void NeuralNetwork::FeedForward(double* inputs, double** retVal)
 {
   // Checking input
   if (inputs == nullptr)
-    throw 2;
+    throw std::logic_error("Invalid argument -> NeuralNetwork::FeedForward(...)");
 
   layers[0].FeedForward(inputs);
 
@@ -88,7 +88,7 @@ void NeuralNetwork::BackPropagate(double* expected)
 {
   // Checking input
   if (expected == nullptr)
-    throw 2;
+    throw std::logic_error("Invalid argument -> NeuralNetwork::BackPropagate(...)");
 
   int l;
 

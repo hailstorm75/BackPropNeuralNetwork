@@ -38,10 +38,18 @@
 //
 //#pragma region Output
 //
-//  for (auto j = 0; j < 7; j++)
-//    printf("Expected: %g\tReceived: %f\n", (expectedData[0])[j], net.FeedForward(fedData[j])[0]);
+//  double* result = static_cast<double*>(malloc(sizeof(double*)));
 //
-//  printf("Expected: %d\tReceived: %f\n", 1, net.FeedForward(new double[3]{ 1, 1, 1 })[0]);
+//  for (auto j = 0; j < 7; j++)
+//  {
+//    net.FeedForward(fedData[j], &result);
+//
+//    printf("Expected: %g\tReceived: %f\n", (expectedData[0])[j], result[0]);
+//  }
+//
+//  net.FeedForward(new double[3]{ 1, 1, 1 }, &result);
+//
+//  printf("Expected: %d\tReceived: %f\n", 1, result[0]);
 //
 //#pragma endregion
 //

@@ -23,6 +23,7 @@ namespace BackPropNeuralNetworkCPPTests
 
       Assert::IsTrue(_msize(layer.inputs) / sizeof(layer.inputs) == numberOfInputs);
     }
+
     TEST_METHOD(LayerTestConstructor_outputs)
     {
       auto numberOfInputs = 10;
@@ -31,6 +32,7 @@ namespace BackPropNeuralNetworkCPPTests
 
       Assert::IsTrue(_msize(layer.outputs) / sizeof(layer.outputs) == numberOfOutputs);
     }
+
     TEST_METHOD(LayerTestConstructor_gamma)
     {
       auto numberOfInputs = 10;
@@ -39,6 +41,7 @@ namespace BackPropNeuralNetworkCPPTests
 
       Assert::IsTrue(_msize(layer.gamma) / sizeof(layer.gamma) == numberOfOutputs);
     }
+
     TEST_METHOD(LayerTestConstructor_error)
     {
       auto numberOfInputs = 10;
@@ -47,6 +50,7 @@ namespace BackPropNeuralNetworkCPPTests
 
       Assert::IsTrue(_msize(layer.error) / sizeof(layer.error) == numberOfOutputs);
     }
+
     TEST_METHOD(LayerTestConstructor_weights)
     {
       auto numberOfInputs = 10;
@@ -55,6 +59,7 @@ namespace BackPropNeuralNetworkCPPTests
 
       Assert::IsTrue(_msize(layer.weights) / sizeof(layer.weights) == numberOfOutputs * numberOfInputs);
     }
+
     TEST_METHOD(LayerTestConstructor_weightsDelta)
     {
       auto numberOfInputs = 10;
@@ -66,26 +71,61 @@ namespace BackPropNeuralNetworkCPPTests
 
 #pragma endregion
 
-    // TODO Function untestable
-   /* TEST_METHOD(LayerTest_FeedForward)
+    TEST_METHOD(LayerTest_FeedForward)
     {
       Layer layer(1,1);
 
-      Assert::ExpectException<int>([layer](double * x) { layer.FeedForward(nullptr); });
-    }*/
+      bool caughtException;
+
+      try
+      {
+        layer.FeedForward(nullptr);
+        caughtException = false;
+      }
+      catch (std::logic_error)
+      {
+        caughtException = true;
+      }
+
+      Assert::IsTrue(caughtException, nullpointerEx);
+    }
 
     TEST_METHOD(LayerTest_BackPropOutput)
     {
       Layer layer(1, 1);
 
-      Assert::ExpectException<int>([layer] { layer.BackPropOutput(nullptr); }, nullpointerEx);
+      bool caughtException;
+
+      try
+      {
+        layer.BackPropOutput(nullptr);
+        caughtException = false;
+      }
+      catch (std::logic_error)
+      {
+        caughtException = true;
+      }
+      
+      Assert::IsTrue(caughtException, nullpointerEx);      
     }
 
     TEST_METHOD(LayerTest_BackPropHidden)
     {
       Layer layer(1, 1);
 
-      Assert::ExpectException<int>([layer] { layer.BackPropHidden(nullptr, nullptr); }, nullpointerEx);
+      bool caughtException;
+
+      try
+      {
+        layer.BackPropHidden(nullptr, nullptr);
+        caughtException = false;
+      }
+      catch (std::logic_error)
+      {
+        caughtException = true;
+      }
+
+      Assert::IsTrue(caughtException, nullpointerEx);
     }
   };
 }

@@ -66,14 +66,14 @@ public:
   * \brief Back propagation algorythm from output to penultimate layer
   * \param expected Expected result
   */
-  void BackPropOutput(double* expected) const;
+  void BackPropOutput(double* expected);
 
   /**
   * \brief Back propagation algorythm from penultimate to input layer
   * \param gammaForward
   * \param weightsForward
   */
-  void BackPropHidden(double* gammaForward, double* weightsForward) const;
+  void BackPropHidden(double* gammaForward, double* weightsForward);
 
 #pragma endregion
 
