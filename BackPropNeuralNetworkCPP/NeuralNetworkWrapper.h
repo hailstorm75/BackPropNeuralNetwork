@@ -10,7 +10,8 @@ namespace Wrapper
   public:
     NeuralNetworkWrapper(int* layer, const int size);
     void TrainNetwork(int iterations, bool silent);
-  private:
+    void FeedForward(double* inputs, double** retVal);
+  
     NeuralNetwork* pNN;
   };
 }

@@ -4,8 +4,8 @@
 
 Wrapper::NeuralNetworkWrapper::NeuralNetworkWrapper(int* layer, const int size)
 {
-  NeuralNetwork net(layer, size);
-  pNN = &net;
+  NeuralNetwork* net = new NeuralNetwork(layer, size);
+  pNN = net;
 }
 
 void Wrapper::NeuralNetworkWrapper::TrainNetwork(int iterations, bool silent)
@@ -27,4 +27,9 @@ void Wrapper::NeuralNetworkWrapper::TrainNetwork(int iterations, bool silent)
 #pragma endregion
 
   pNN->TrainNetwork(fedData, expectedData, iterations, silent);
+}
+
+void Wrapper::NeuralNetworkWrapper::FeedForward(double* inputs, double** retVal)
+{
+  pNN->FeedForward(inputs, retVal);
 }
