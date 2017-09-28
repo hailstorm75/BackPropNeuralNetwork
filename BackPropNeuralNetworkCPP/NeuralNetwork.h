@@ -48,14 +48,18 @@ public:
 
 #pragma endregion
 
-  int layersLength;
-
-private:
 #pragma region Fields
+
+  int layersLength;
 
   int* layer;
 
   std::vector<Layer> layers;
+
+#pragma endregion
+
+private:
+#pragma region Fields
 
   HANDLE outHandle = GetStdHandle(STD_OUTPUT_HANDLE);
   CONSOLE_CURSOR_INFO cursorInfo;

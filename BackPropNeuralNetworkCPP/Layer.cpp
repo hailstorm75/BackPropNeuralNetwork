@@ -75,10 +75,10 @@ void Layer::BackPropOutput(double* expected)
   int out;
 
   for (out = 0; out < numberOfOutputs; out++)
+  {
     error[out] = outputs[out] - expected[out];
-
-  for (out = 0; out < numberOfOutputs; out++)
     gamma[out] = error[out] * DeriveFunction(outputs[out]);
+  }
 
   for (out = 0; out < numberOfOutputs; out++)
     for (auto in = 0; in < numberOfInputs; in++)
