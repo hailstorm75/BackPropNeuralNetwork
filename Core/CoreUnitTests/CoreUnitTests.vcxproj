@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{837CA4AD-EAB4-4E68-B92F-BF439B654762}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>BackPropNeuralNetworkCPPTests</RootNamespace>
+    <RootNamespace>CoreTests</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <ProjectName>CoreUnitTests</ProjectName>
   </PropertyGroup>
@@ -168,7 +168,7 @@
     <ClCompile Include="NeuralNetworkTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BackPropNeuralNetworkCPP\BackPropNeuralNetworkCPP.vcxproj">
+    <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{a4f42f62-c2ae-4fa7-ba02-0248f24849ff}</Project>
       <Private>false</Private>
     </ProjectReference>

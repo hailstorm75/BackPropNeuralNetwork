@@ -3,7 +3,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace BackPropNeuralNetworkCPPTests
+namespace CoreTests
 {
   TEST_CLASS(NeuralNetworkWrapperTest)
   {

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "BackPropNeuralNetworkCPP\BackPropNeuralNetworkCPP.vcxproj", "{A4F42F62-C2AE-4FA7-BA02-0248F24849FF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Core\Core\Core.vcxproj", "{A4F42F62-C2AE-4FA7-BA02-0248F24849FF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreUnitTests", "BackPropNeuralNetworkCPPTests\BackPropNeuralNetworkCPPTests.vcxproj", "{837CA4AD-EAB4-4E68-B92F-BF439B654762}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreUnitTests", "Core\CoreUnitTests\CoreUnitTests.vcxproj", "{837CA4AD-EAB4-4E68-B92F-BF439B654762}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetworkFacadeCS", "BackPropNeuralNetworkCS\NeuralNetworkFacadeCS.csproj", "{735BF9E0-C2F1-4064-8D22-E9C7F993BBEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetworkFacadeCS", "NeuralNetworkFacadeCS\NeuralNetworkFacadeCS.csproj", "{735BF9E0-C2F1-4064-8D22-E9C7F993BBEC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7BD49BE6-9B49-41E8-A559-AD2AC8E6504A}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,9 +17,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NN Core", "NN Core", "{0275427D-CA50-40FD-A544-45ABCD43139B}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
