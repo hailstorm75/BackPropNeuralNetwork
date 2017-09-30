@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../Core/NeuralNetwork.h"
-#include "../Core/NeuralNetwork.cpp"
-#include "../Core/Layer.h"
-#include "../Core/Layer.cpp"
+#include "../BackPropNeuralNetworkCPP/NeuralNetwork.h"
+#include "../BackPropNeuralNetworkCPP/NeuralNetwork.cpp"
+#include "../BackPropNeuralNetworkCPP/Layer.h"
+#include "../BackPropNeuralNetworkCPP/Layer.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace CoreTests
+namespace BackPropNeuralNetworkCPPTests
 {
   TEST_CLASS(NeuralNetworkTest)
   {

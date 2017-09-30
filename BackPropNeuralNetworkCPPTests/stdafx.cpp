@@ -1,5 +1,5 @@
 // stdafx.cpp : source file that includes just the standard includes
-// CoreTests.pch will be the pre-compiled header
+// BackPropNeuralNetworkCPPTests.pch will be the pre-compiled header
 // stdafx.obj will contain the pre-compiled type information
 
 #include "stdafx.h"
