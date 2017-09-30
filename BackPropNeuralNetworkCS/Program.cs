@@ -26,8 +26,14 @@ namespace NeuralNetworkFacadeCS
       
       #endregion
 
+      // Approximately 45ms to create network
+      // TODO Optimize
       var net = new FacadeX64(layers, trainingData, expectedData);
+
+      // Approximately 1s to train network
       net.TrainNetwork();
+
+      // Negligible estimate 
       net.OutputToConsoleTest();
 
       Console.ReadKey();

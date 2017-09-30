@@ -23,7 +23,7 @@ namespace Wrapper
     NeuralNetwork* pNN;
 
   private:
-    void ConvertToVectorDouble(double* input, int* rows, int* columns, std::vector<double*> *output);
+    std::vector<double*> ConvertToVectorDouble(double* input, int* rows, int* columns, std::vector<double*> output);
     void ExportCSV();
 
     int* _layer;

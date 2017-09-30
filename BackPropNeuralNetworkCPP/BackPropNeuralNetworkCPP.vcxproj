@@ -147,7 +147,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BackPropNeuralNetworkCPP.cpp" />
     <ClCompile Include="Layer.cpp" />
     <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="NeuralNetworkWrapper.cpp" />

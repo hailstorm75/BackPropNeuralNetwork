@@ -47,9 +47,7 @@ void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<dou
     for (auto in = 0; in < inputData.size(); in++)
     {
       FeedForward(inputData[in]);
-
-      for (auto out = 0; out < outputData.size(); out++)
-        BackPropagate(outputData[out]);
+      BackPropagate(outputData[in]);
     }
 
     if (!silent)
@@ -80,7 +78,7 @@ void NeuralNetwork::FeedForward(double* inputs, double** retVal)
   for (auto l = 1; l < layersLength; l++)
     layers[l].FeedForward(layers[l - 1].outputs);
 
-  if (retVal != nullptr)  
+  if (retVal != nullptr)
     *retVal = layers[layersLength - 1].outputs;
 }
 

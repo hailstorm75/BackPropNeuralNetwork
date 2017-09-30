@@ -44,8 +44,5 @@
     <ClCompile Include="NeuralNetworkWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BackPropNeuralNetworkCPP.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
