@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NN Core", "NN Core", "{0275427D-CA50-40FD-A544-45ABCD43139B}"
+EndProject
 Global
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
@@ -61,6 +63,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A4F42F62-C2AE-4FA7-BA02-0248F24849FF} = {0275427D-CA50-40FD-A544-45ABCD43139B}
+		{837CA4AD-EAB4-4E68-B92F-BF439B654762} = {0275427D-CA50-40FD-A544-45ABCD43139B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B893E97C-E00C-4224-91FF-8A4E93891577}
