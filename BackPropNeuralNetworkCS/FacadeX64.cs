@@ -55,8 +55,8 @@ namespace NeuralNetworkFacadeCS
     /// <param name="expectedData">Data the network is expected to output</param>
     public FacadeX64(int[] layers, double[,] trainingData, double[,] expectedData)
     {
-      Convert2DArrayTo1D(trainingData, ref _trainingData);
-      Convert2DArrayTo1D(expectedData, ref _expectedData); 
+      Convert2DArrayTo1D(trainingData, out _trainingData);
+      Convert2DArrayTo1D(expectedData, out _expectedData);
 
       _mode = Mode.WithTraining;
       _layers = layers;
@@ -69,8 +69,9 @@ namespace NeuralNetworkFacadeCS
     /// Training mode constructor
     /// </summary>
     /// <param name="pathToCSV">Path to saved neural network settings</param>
-    public FacadeX64(string pathToCSV)
-    {      
+    public FacadeX64(string pathToCSV, EventHandler trainingComplete)
+    {
+      TrainingComplete = trainingComplete;
       _mode = Mode.WithoutTraining;
 
       // TODO Load net config
@@ -103,16 +104,27 @@ namespace NeuralNetworkFacadeCS
           }
         }
       }
+
+      OnTrainingComplete(EventArgs.Empty);
     }
 
-    public void OutputToConsoleTest()
+    private static double CalculateError(double expected, double received)
+    {
+      return expected == 0 ? Math.Abs(received) : expected - Math.Abs(received);
+    }
+
+    public void OutputToConsoleTest(ref double totalError, ref bool stability, bool silent)
     {
       if (_mode == Mode.WithTraining)
       {
+        var error = 0.0d;
+
         unsafe
         {
           for (var i = 0; i < _dataSize; i++)
           {
+            if (!silent) Console.WriteLine($"Data set #{i}");
+
             fixed (double* pInputs = &_trainingData[i * _layers[0]])
             {
               double* retVal;
@@ -120,11 +132,24 @@ namespace NeuralNetworkFacadeCS
 
               for (var j = 0; j < _layers[_layers.Length - 1]; j++)
               {
-                Console.WriteLine($"Data set #{j}");
-                Console.WriteLine($"\tExpected: {_expectedData[j * _dataSize + i]}\tReceived: {Math.Round(retVal[j], 3)}");
+                if (!silent) Console.WriteLine($"\tExpected: {_expectedData[i * _layers[_layers.Length - 1] + j]}\tReceived: {Math.Round(retVal[j], 3)}");
+                error += CalculateError(_expectedData[i * _layers[_layers.Length - 1] + j], retVal[j]);
               }
             }
           }
+        }
+
+        var e = 1 - error / _expectedData.Length;
+        var accuracy = 100 * e;        
+        var success = accuracy >= 95.0;
+
+        stability &= success;
+        totalError += e;
+
+        if (!silent)
+        {
+          Console.WriteLine($"\nAccuracy: {accuracy} %");
+          Console.WriteLine(success ? "Success" : "Failure");          
         }
       }
       else
@@ -145,22 +170,24 @@ namespace NeuralNetworkFacadeCS
       }
     }
 
-    private bool Convert2DArrayTo1D(double[,] input, ref double[] output)
+    private static void Convert2DArrayTo1D(double[,] input, out double[] output)
     {
-      if (output == null)
-        output = new double[input.Length];
-      else if (output.Length == input.Length)
-        return false;
+      output = new double[input.Length];
 
-      try
-      {
-        Buffer.BlockCopy(input, 0, output, 0, output.Length * sizeof(double));
-        return true;
-      }
-      catch (Exception)
-      {
-        return false;
-      }
+      Buffer.BlockCopy(input, 0, output, 0, output.Length * sizeof(double));
+    }
+
+    #endregion
+
+    #region Events
+
+    public EventHandler TrainingComplete;
+
+    private void OnTrainingComplete(EventArgs e)
+    {
+      var handler = TrainingComplete;
+
+      handler?.Invoke(this, e);
     }
 
     #endregion

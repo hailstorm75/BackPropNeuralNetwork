@@ -35,6 +35,7 @@ void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<dou
 
   if (!silent)
   {
+    system("CLS");
     GetConsoleCursorInfo(outHandle, &cursorInfo);
     cursorInfo.bVisible = false;
     SetConsoleCursorInfo(outHandle, &cursorInfo);
