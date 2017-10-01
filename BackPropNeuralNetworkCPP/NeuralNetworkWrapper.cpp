@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "NeuralNetworkWrapper.h"
-#include <memory>
 
 
 #pragma region Constructor
 
 Wrapper::NeuralNetworkWrapper::NeuralNetworkWrapper(int* layer, const int size)
 {
+  if (layer == nullptr || size == 0)
+    throw std::logic_error("Invalid argument -> NeuralNetworkWrapper::NeuralNetworkWrapper(...)");
+
   _layer = layer;
   pNN = new NeuralNetwork(layer, size);
 }
@@ -17,6 +19,9 @@ Wrapper::NeuralNetworkWrapper::NeuralNetworkWrapper(int* layer, const int size)
 
 void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* expectedData, int dataSetSize, int iterations, bool silent)
 {
+  if (trainingData == nullptr || expectedData == nullptr || dataSetSize == 0 || iterations <= 0)
+    throw std::logic_error("Invalid argument -> NeuralNetworkWrapper::TrainNetwork(...)");
+
   std::vector<double*> _trainingData;
   std::vector<double *> _expectedData;
 
@@ -30,6 +35,9 @@ void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* e
 
 void Wrapper::NeuralNetworkWrapper::FeedForward(double* inputs, double** retVal)
 {
+  if (inputs == nullptr || retVal == nullptr)
+    throw std::logic_error("Invalid argument -> NeuralNetworkWrapper::FeedForward(...)");
+
   pNN->FeedForward(inputs, retVal);
 }
 
