@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Data
+namespace NetworkBenchmarking
 {
   /// <summary>
   /// Generates a data-set
   /// </summary>
-  public class Generator
+  public class DataGenerator
   {
     #region Properties
 
@@ -25,8 +25,8 @@ namespace Data
     /// <summary>
     /// Expected data property
     /// </summary>
-    public double[,] ExpectedData { get; private set; } 
-   
+    public double[,] ExpectedData { get; private set; }
+
     #endregion
 
     #region Constructor
@@ -37,7 +37,7 @@ namespace Data
     /// <param name="inputCount">Number of elements in <see cref="TrainingData"/></param>
     /// <param name="outputCount">Number of elements in <see cref="ExpectedData"/></param>
     /// <param name="operationType">Logical operation which is to be applied to <see cref="TrainingData"/> values to create <see cref="ExpectedData"/></param>
-    public Generator(int inputCount, int outputCount, Operation operationType)
+    public DataGenerator(int inputCount, int outputCount, Operation operationType)
     {
       if (inputCount <= 2 || outputCount < 1)
         throw new ArgumentException("Invalid input or output count.");
@@ -91,13 +91,13 @@ namespace Data
     {
       // Initializing array
       ExpectedData = new double[TrainingData.GetLength(0), outputCount];
-      
+
       for (var i = 0; i < TrainingData.GetLength(0); i++)
       {
         if (TrainingData.GetLength(1) % outputCount == 0)
           for (var j = 0; j < outputCount; j++)
-            for (var k = 0; k < TrainingData.GetLength(1) / outputCount - 1; k++)
-              ExpectedData[i, j] = TrainingData[i, j * outputCount + k] + TrainingData[i, j * outputCount + k + 1];
+          for (var k = 0; k < TrainingData.GetLength(1) / outputCount - 1; k++)
+            ExpectedData[i, j] = TrainingData[i, j * outputCount + k] + TrainingData[i, j * outputCount + k + 1];
         else
           for (var j = 0; j < outputCount; j++)
           for (var k = 0; k < TrainingData.GetLength(1) - outputCount; k++) // inputCount - (outputCount - 1) - 1

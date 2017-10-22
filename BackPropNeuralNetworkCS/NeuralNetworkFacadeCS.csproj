@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{735BF9E0-C2F1-4064-8D22-E9C7F993BBEC}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NeuralNetworkFacadeCS</RootNamespace>
     <AssemblyName>NeuralNetworkFacadeCS</AssemblyName>
@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,7 +51,6 @@
   <ItemGroup>
     <Compile Include="FacadeX64.cs" />
     <Compile Include="IFacade.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,10 +60,6 @@
     <ProjectReference Include="..\BackPropNeuralNetworkCPP\BackPropNeuralNetworkCPP.vcxproj">
       <Project>{a4f42f62-c2ae-4fa7-ba02-0248f24849ff}</Project>
       <Name>Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Data\Data.csproj">
-      <Project>{557ae515-3da3-4bb9-b4ed-c7a7a9e92e89}</Project>
-      <Name>Data</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
