@@ -15,6 +15,8 @@ public:
   */
   NeuralNetwork(int* layer, const int size);
 
+  void Clear();
+
 #pragma endregion
 
 #pragma region Methods
@@ -25,7 +27,7 @@ public:
   * \param outputData Expected results
   * \param iterations Times to repeat training
   */
-  void TrainNetwork(std::vector<double*> inputData, std::vector<double*> outputData, int iterations, bool silent);
+  void TrainNetwork(std::vector<double*> inputData, std::vector<double*> outputData, int iterations);
 
   /**
   * \brief Feeds data through Neural network

@@ -4,6 +4,6 @@
   {
     void ExportToCSV();
     void TrainNetwork();
-    void OutputToConsoleTest(ref double totalError, ref bool stability, bool silent);
+    void OutputToConsoleTest(ref double totalError, ref bool stability);
   }
 }

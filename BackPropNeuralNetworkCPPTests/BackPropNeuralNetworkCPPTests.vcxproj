@@ -22,7 +22,7 @@
     <ProjectGuid>{837CA4AD-EAB4-4E68-B92F-BF439B654762}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BackPropNeuralNetworkCPPTests</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
     <ProjectName>CoreUnitTests</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

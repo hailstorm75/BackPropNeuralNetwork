@@ -13,24 +13,37 @@ Wrapper::NeuralNetworkWrapper::NeuralNetworkWrapper(int* layer, const int size)
   pNN = new NeuralNetwork(layer, size);
 }
 
+void Wrapper::NeuralNetworkWrapper::Clear()
+{
+  pNN->Clear();
+}
+
 #pragma endregion
 
 #pragma region Methods
 
-void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* expectedData, int dataSetSize, int iterations, bool silent)
+void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* expectedData, int dataSetSize, int iterations)
 {
   if (trainingData == nullptr || expectedData == nullptr || dataSetSize == 0 || iterations <= 0)
     throw std::logic_error("Invalid argument -> NeuralNetworkWrapper::TrainNetwork(...)");
 
-  std::vector<double*> _trainingData;
-  std::vector<double *> _expectedData;
-
   int* layer = pNN->GetLayer();
 
-  _trainingData = ConvertToVectorDouble(trainingData, &dataSetSize, &layer[0], _trainingData);
-  _expectedData = ConvertToVectorDouble(expectedData, &dataSetSize, &layer[pNN->layersLength], _expectedData);
+  std::vector<double *> _trainingData;
+    std::vector<double *> _expectedData;
 
-  pNN->TrainNetwork(_trainingData, _expectedData, iterations, silent);
+  // Converting data
+  _trainingData = ConvertToVectorDouble(trainingData, dataSetSize, layer[0], _trainingData);
+  _expectedData = ConvertToVectorDouble(expectedData, dataSetSize, layer[pNN->layersLength], _expectedData);
+
+  // Training network
+  pNN->TrainNetwork(_trainingData, _expectedData, iterations);
+
+  // Freeing memmory
+  for (auto i = 0; i < _trainingData.size(); ++i)
+    free(_trainingData[i]);
+  for (auto i = 0; i < _expectedData.size(); ++i)
+    free(_expectedData[i]);
 }
 
 void Wrapper::NeuralNetworkWrapper::FeedForward(double* inputs, double** retVal)
@@ -41,15 +54,15 @@ void Wrapper::NeuralNetworkWrapper::FeedForward(double* inputs, double** retVal)
   pNN->FeedForward(inputs, retVal);
 }
 
-std::vector<double*> Wrapper::NeuralNetworkWrapper::ConvertToVectorDouble(double* input, int* rows, int* columns, std::vector<double*> output)
+std::vector<double*> Wrapper::NeuralNetworkWrapper::ConvertToVectorDouble(double* input, int rows, int columns, std::vector<double*> output)
 {
   // TODO Avoid copying data, resolve with pointers
-  for (auto i = 0; i < *rows; i++)
+  for (auto i = 0; i < rows; i++)
   {
-    output.push_back(static_cast<double*>(calloc(*columns, sizeof(double))));
-   
-    for (auto j = 0; j < *columns; j++)
-      output[output.size() - 1][j] = input[i * *columns + j];
+    output.push_back(static_cast<double*>(malloc(columns * sizeof(double))));
+
+    for (auto j = 0; j < columns; j++)
+      output[output.size() - 1][j] = input[i * columns + j];
   }
 
   return output;
@@ -75,10 +88,10 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
   std::ofstream exportFile;
   exportFile.open("NeuralNetworkExport.csv");
   exportFile << "layer\n";
-  
+
   for (int i = 0; i < pNN->layersLength + 1; i++)
   {
-    ss <<_layer[i];
+    ss << _layer[i];
 
     if (i = pNN->layersLength)
       ss << ";";
@@ -102,7 +115,6 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
 
     ss.clear();
     exportFile << "layer " << i << " - outputs";
-    pNN->layers[i].outputs;
 
     for (int j = 0; j < _layer[i + 1]; j++)
     {
@@ -114,7 +126,6 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
 
     ss.clear();
     exportFile << "layer " << i << " - outputs";
-    pNN->layers[i].outputs;
 
     for (int j = 0; j < _layer[i + 1]; j++)
     {
@@ -126,7 +137,6 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
 
     ss.clear();
     exportFile << "layer " << i << " - gamma";
-    pNN->layers[i].gamma;
 
     for (int j = 0; j < _layer[i + 1]; j++)
     {
@@ -138,7 +148,6 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
 
     ss.clear();
     exportFile << "layer " << i << " - error";
-    pNN->layers[i].error;
 
     for (int j = 0; j < _layer[i + 1]; j++)
     {

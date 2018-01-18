@@ -62,7 +62,7 @@ namespace NeuralNetworkFacadeCS
       _layers = layers;
       _dataSize = trainingData.GetLength(0);
 
-      InitializeNetwork();
+      Initialize();
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ namespace NeuralNetworkFacadeCS
 
       // TODO Load net config
 
-      InitializeNetwork();
+      Initialize();
     }
 
     #endregion
@@ -100,7 +100,7 @@ namespace NeuralNetworkFacadeCS
         {
           fixed (double* pExpectedData = &_expectedData[0])
           {
-            _net.TrainNetwork(pTrainingData, pExpectedData, _dataSize, 5000, false);
+            _net.TrainNetwork(pTrainingData, pExpectedData, _dataSize, 5000);
           }
         }
       }
@@ -108,57 +108,9 @@ namespace NeuralNetworkFacadeCS
       OnTrainingComplete(EventArgs.Empty);
     }
 
-    private static double CalculateError(double expected, double received)
-    {
-      return expected == 0 ? Math.Abs(received) : expected - Math.Abs(received);
-    }
+    public void Clear() => _net.Clear();
 
-    public void OutputToConsoleTest(ref double totalError, ref bool stability, bool silent)
-    {
-      if (_mode == Mode.WithTraining)
-      {
-        var error = 0.0d;
-
-        unsafe
-        {
-          for (var i = 0; i < _dataSize; i++)
-          {
-            if (!silent) Console.WriteLine($"Data set #{i}");
-
-            fixed (double* pInputs = &_trainingData[i * _layers[0]])
-            {
-              double* retVal;
-              _net.FeedForward(pInputs, &retVal);
-
-              for (var j = 0; j < _layers[_layers.Length - 1]; j++)
-              {
-                if (!silent) Console.WriteLine($"\tExpected: {_expectedData[i * _layers[_layers.Length - 1] + j]}\tReceived: {Math.Round(retVal[j], 3)}");
-                error += CalculateError(_expectedData[i * _layers[_layers.Length - 1] + j], retVal[j]);
-              }
-            }
-          }
-        }
-
-        var e = 1 - error / _expectedData.Length;
-        var accuracy = 100 * e;        
-        var success = accuracy >= 95.0;
-
-        stability &= success;
-        totalError += e;
-
-        if (!silent)
-        {
-          Console.WriteLine($"\nAccuracy: {accuracy} %");
-          Console.WriteLine(success ? "Success" : "Failure");          
-        }
-      }
-      else
-      {
-        Console.WriteLine("Network is not in training mode.");
-      }
-    }
-
-    private void InitializeNetwork()
+    private void Initialize()
     {
       unsafe
       {
@@ -169,6 +121,38 @@ namespace NeuralNetworkFacadeCS
         }
       }
     }
+
+    public void OutputToConsoleTest(ref double totalError, ref bool stability)
+    {
+      if (_mode == Mode.WithTraining)
+      {
+        var error = 0.0d;
+
+        unsafe
+        {
+          for (var i = 0; i < _dataSize; i++)
+          {
+            fixed (double* pInputs = &_trainingData[i * _layers[0]])
+            {
+              double* retVal;
+              _net.FeedForward(pInputs, &retVal);
+
+              for (var j = 0; j < _layers[_layers.Length - 1]; j++)
+                error += CalculateError(_expectedData[i * _layers[_layers.Length - 1] + j], retVal[j]);
+            }
+          }
+        }
+
+        var e = 1 - error / _expectedData.Length;
+        var accuracy = 100 * e;        
+        var success = accuracy >= 95.0;
+
+        stability &= success;
+        totalError += e;
+      }
+    }
+
+    private static double CalculateError(double expected, double received) => expected == 0 ? Math.Abs(received) : expected - Math.Abs(received);
 
     private static void Convert2DArrayTo1D(double[,] input, out double[] output)
     {

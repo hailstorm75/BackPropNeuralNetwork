@@ -27,6 +27,11 @@ public:
   */
   Layer(int numberOfInputs, int numberOfOutputs);
 
+  /**
+  * \brief Layer destructor
+  */
+  void Clear();
+
 #pragma endregion
 
 #pragma region Methods

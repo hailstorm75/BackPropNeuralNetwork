@@ -17,11 +17,18 @@ NeuralNetwork::NeuralNetwork(int* layer, const int size)
     layers.push_back(Layer(this->layer[l], this->layer[l + 1]));
 }
 
+void NeuralNetwork::Clear()
+{
+  for (auto i = 0; i < layers.size(); ++i) layers[i].~Layer();
+
+  layers.clear();
+}
+
 #pragma endregion
 
 #pragma region Methods
 
-void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<double*> outputData, int iterations, bool silent)
+void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<double*> outputData, int iterations)
 {
   // Checking inputs
   if (inputData.size() <= 0 || outputData.size() <= 0)
@@ -33,38 +40,13 @@ void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<dou
 
   auto division = iterations / 100;
 
-  if (!silent)
-  {
-    system("CLS");
-    GetConsoleCursorInfo(outHandle, &cursorInfo);
-    cursorInfo.bVisible = false;
-    SetConsoleCursorInfo(outHandle, &cursorInfo);
-  }
-
   for (auto iteration = 0; iteration < iterations; iteration++)
   {
-    if (!silent) std::cout << "Training: " << static_cast<int>(iteration / division) << "%";
-
     for (auto in = 0; in < inputData.size(); in++)
     {
       FeedForward(inputData[in]);
       BackPropagate(outputData[in]);
     }
-
-    if (!silent)
-    {
-      COORD cur = { 0, 0 };
-      SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cur);
-    }
-  }
-
-  if (!silent)
-  {
-    GetConsoleCursorInfo(outHandle, &cursorInfo);
-    cursorInfo.bVisible = true;
-    SetConsoleCursorInfo(outHandle, &cursorInfo);
-
-    std::cout << "Training: " << 100 << "%" << std::endl;
   }
 }
 

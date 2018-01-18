@@ -66,7 +66,7 @@ namespace BackPropNeuralNetworkCPPTests
 
       try
       {
-        net.TrainNetwork(std::vector<double *>(0), std::vector<double *>(0), NULL, false);
+        net.TrainNetwork(std::vector<double *>(0), std::vector<double *>(0), NULL);
         caughtException = false;
       }
       catch (std::logic_error)

@@ -17,15 +17,12 @@ namespace NetworkBenchmarking
       Equivalence = 4
     }
 
-    /// <summary>
-    /// Training data property
-    /// </summary>
-    public double[,] TrainingData { get; private set; }
+    #endregion
 
-    /// <summary>
-    /// Expected data property
-    /// </summary>
-    public double[,] ExpectedData { get; private set; }
+    #region Fields
+
+    private int _inputCount;
+    private int _outputCount;
 
     #endregion
 
@@ -37,15 +34,15 @@ namespace NetworkBenchmarking
     /// <param name="inputCount">Number of elements in <see cref="TrainingData"/></param>
     /// <param name="outputCount">Number of elements in <see cref="ExpectedData"/></param>
     /// <param name="operationType">Logical operation which is to be applied to <see cref="TrainingData"/> values to create <see cref="ExpectedData"/></param>
-    public DataGenerator(int inputCount, int outputCount, Operation operationType)
+    public DataGenerator(int inputCount, int outputCount)
     {
       if (inputCount <= 2 || outputCount < 1)
         throw new ArgumentException("Invalid input or output count.");
       if (inputCount <= outputCount)
         throw new ArgumentException("Input count less or equals than output count is prohibited.");
 
-      GenerateTrainingData(ref inputCount);
-      GenerateExpectedData(ref outputCount, ref operationType);
+      _inputCount = inputCount;
+      _outputCount = outputCount;
     }
 
     #endregion
@@ -56,18 +53,18 @@ namespace NetworkBenchmarking
     /// Generates a truth table
     /// </summary>
     /// <param name="inputCount">Number of elements in truth table</param>
-    private void GenerateTrainingData(ref int inputCount)
+    public double[,] GenerateTrainingData()
     {
       // Initializing array
-      TrainingData = new double[(int)Math.Pow(2, inputCount), inputCount];
+      var trainingData = new double[(int)Math.Pow(2, _inputCount), _inputCount];
 
-      for (var i = 0; i < TrainingData.GetLength(1); i++)
+      for (var i = 0; i < trainingData.GetLength(1); ++i)
       {
         var inc = (int)Math.Pow(2, i);
         var bin = 0;
         var bit = false;
 
-        for (var j = 0; j < TrainingData.GetLength(0); j++)
+        for (var j = 0; j < trainingData.GetLength(0); ++j)
         {
           if (bin >= inc)
           {
@@ -75,11 +72,13 @@ namespace NetworkBenchmarking
             bin = 0;
           }
 
-          TrainingData[j, i] = bit ? 1 : 0;
+          trainingData[j, i] = bit ? 1 : 0;
 
-          bin++;
+          ++bin;
         }
       }
+
+      return trainingData;
     }
 
     /// <summary>
@@ -87,22 +86,28 @@ namespace NetworkBenchmarking
     /// </summary>
     /// <param name="outputCount">Number of elements in <see cref="ExpectedData"/></param>
     /// <param name="operationType">Logical operation which is to be applied to <see cref="TrainingData"/> values to create <see cref="ExpectedData"/></param>
-    private void GenerateExpectedData(ref int outputCount, ref Operation operationType)
+    public double[,] GenerateExpectedData(ref double[,] trainingData, Operation operationType)
     {
       // Initializing array
-      ExpectedData = new double[TrainingData.GetLength(0), outputCount];
+      var expectedData = new double[trainingData.GetLength(0), _outputCount];
 
-      for (var i = 0; i < TrainingData.GetLength(0); i++)
+      for (var i = 0; i < trainingData.GetLength(0); ++i)
       {
-        if (TrainingData.GetLength(1) % outputCount == 0)
-          for (var j = 0; j < outputCount; j++)
-          for (var k = 0; k < TrainingData.GetLength(1) / outputCount - 1; k++)
-            ExpectedData[i, j] = TrainingData[i, j * outputCount + k] + TrainingData[i, j * outputCount + k + 1];
+        if (trainingData.GetLength(1) % _outputCount == 0)
+        {
+          for (var j = 0; j < _outputCount; j++)
+            for (var k = 0; k < trainingData.GetLength(1) / _outputCount - 1; ++k)
+              expectedData[i, j] = trainingData[i, j * _outputCount + k] + trainingData[i, j * _outputCount + k + 1];
+        }
         else
-          for (var j = 0; j < outputCount; j++)
-          for (var k = 0; k < TrainingData.GetLength(1) - outputCount; k++) // inputCount - (outputCount - 1) - 1
-            ExpectedData[i, j] = Evaluate(ref TrainingData[i, j + k], ref TrainingData[i, j + k + 1], ref operationType);
+        {
+          for (var j = 0; j < _outputCount; ++j)
+            for (var k = 0; k < trainingData.GetLength(1) - _outputCount; ++k)
+              expectedData[i, j] = Evaluate(ref trainingData[i, j + k], ref trainingData[i, j + k + 1], ref operationType);
+        }
       }
+
+      return expectedData;
     }
 
     /// <summary>

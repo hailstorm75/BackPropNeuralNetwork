@@ -9,16 +9,26 @@ Layer::Layer(int numberOfInputs, int numberOfOutputs)
   this->numberOfOutputs = numberOfOutputs;
 
   // 1D Arrays
-  inputs = static_cast<double *>(calloc(this->numberOfInputs, sizeof(double)));
-  outputs = static_cast<double *>(calloc(this->numberOfOutputs, sizeof(double)));
-  gamma = static_cast<double *>(calloc(this->numberOfOutputs, sizeof(double)));
-  error = static_cast<double *>(calloc(this->numberOfOutputs, sizeof(double)));
+  inputs = static_cast<double *>(malloc(this->numberOfInputs * sizeof(double)));
+  outputs = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
+  gamma = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
+  error = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
 
   // 2D Arrays
-  weights = static_cast<double *>(calloc(this->numberOfOutputs * this->numberOfInputs, sizeof(double)));
-  weightsDelta = static_cast<double *>(calloc(this->numberOfOutputs * this->numberOfInputs, sizeof(double)));
+  weights = static_cast<double *>(malloc(this->numberOfOutputs * this->numberOfInputs * sizeof(double)));
+  weightsDelta = static_cast<double *>(malloc(this->numberOfOutputs * this->numberOfInputs * sizeof(double)));
 
   InitilizeWeights();
+}
+
+void Layer::Clear()
+{
+  free(inputs);
+  free(outputs);
+  free(gamma);
+  free(error);
+  free(weights);
+  free(weightsDelta);
 }
 
 #pragma endregion 
@@ -31,8 +41,8 @@ void Layer::InitilizeWeights() const
   std::default_random_engine generator(rd());
   std::uniform_real_distribution<double> distribution(0.0001, 0.9999);
 
-  for (auto col = 0; col < this->numberOfOutputs; col++)
-    for (auto row = 0; row < this->numberOfInputs; row++)
+  for (auto col = 0; col < this->numberOfOutputs; ++col)
+    for (auto row = 0; row < this->numberOfInputs; ++row)
       weights[col * this->numberOfInputs + row] = distribution(generator);
 }
 
@@ -43,17 +53,17 @@ void Layer::FeedForward(double* inputs, double** retVal)
 
   this->inputs = inputs;
 
-  for (auto out = 0; out < numberOfOutputs; out++)
+  for (auto out = 0; out < numberOfOutputs; ++out)
   {
     outputs[out] = 0;
 
-    for (auto in = 0; in < numberOfInputs; in++)
+    for (auto in = 0; in < numberOfInputs; ++in)
       outputs[out] += inputs[in] * weights[out * numberOfInputs + in];
 
     outputs[out] = ActivateFunction(outputs[out]);
   }
-  if (retVal != nullptr)
-    *retVal = outputs;
+
+  if (retVal != nullptr) *retVal = outputs;
 }
 
 double Layer::ActivateFunction(double value)
@@ -74,14 +84,14 @@ void Layer::BackPropOutput(double* expected)
 
   int out;
 
-  for (out = 0; out < numberOfOutputs; out++)
+  for (out = 0; out < numberOfOutputs; ++out)
   {
     error[out] = outputs[out] - expected[out];
     gamma[out] = error[out] * DeriveFunction(outputs[out]);
   }
 
-  for (out = 0; out < numberOfOutputs; out++)
-    for (auto in = 0; in < numberOfInputs; in++)
+  for (out = 0; out < numberOfOutputs; ++out)
+    for (auto in = 0; in < numberOfInputs; ++in)
       weightsDelta[out * numberOfInputs + in] = gamma[out] * inputs[in];
 }
 
@@ -93,25 +103,25 @@ void Layer::BackPropHidden(double* gammaForward, double* weightsForward)
 
   int out, in;
 
-  for (out = 0; out < numberOfOutputs; out++)
+  for (out = 0; out < numberOfOutputs; ++out)
   {
     gamma[out] = 0;
 
-    for (in = 0; in < _msize(gammaForward) / sizeof(double); in++)
+    for (in = 0; in < _msize(gammaForward) / sizeof(double); ++in)
       gamma[out] += gammaForward[in] * weightsForward[in * numberOfOutputs + out];
 
     gamma[out] *= DeriveFunction(outputs[out]);
   }
 
-  for (out = 0; out < numberOfOutputs; out++)
-    for (in = 0; in < numberOfInputs; in++)
+  for (out = 0; out < numberOfOutputs; ++out)
+    for (in = 0; in < numberOfInputs; ++in)
       weightsDelta[out * numberOfInputs + in] = gamma[out] * inputs[in];
 }
 
 void Layer::UpdateWeights() const
 {
-  for (auto out = 0; out < numberOfOutputs; out++)
-    for (auto in = 0; in < numberOfInputs; in++)
+  for (auto out = 0; out < numberOfOutputs; ++out)
+    for (auto in = 0; in < numberOfInputs; ++in)
       weights[out * numberOfInputs + in] -= weightsDelta[out * numberOfInputs + in] * learningRate;
 }
 

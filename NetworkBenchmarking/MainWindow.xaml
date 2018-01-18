@@ -7,7 +7,27 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
   <Grid>
-    <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="299" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="497"/>
-
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition></ColumnDefinition>
+      <ColumnDefinition></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+    <DockPanel Grid.Column="0">
+      <Button DockPanel.Dock="Bottom" Margin="10, 5, 5, 10" Content="Start" Click="Button_Click"/>
+      <TextBox DockPanel.Dock="Top" x:Name="textBox" HorizontalAlignment="Left" Height="260" Margin="10,10,0,10" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="238" />
+    </DockPanel>
+    <StackPanel Grid.Column="1">
+      <Label Content="Iterations"/>
+      <Slider Name="sld_iterations" Margin="10, 0, 10, 0" Minimum="1" Maximum="10" Value="5" IsSnapToTickEnabled="True" TickFrequency="1"/>
+      <Label Content="Network I/O count"/>
+      <Grid Margin="10, 0, 10 0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition/>
+          <ColumnDefinition Width="10" />
+          <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBox Name="txt_inputs" Grid.Column="0" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
+        <TextBox Name="txt_outputs" Grid.Column="2" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
+      </Grid>
+    </StackPanel>
   </Grid>
 </Window>

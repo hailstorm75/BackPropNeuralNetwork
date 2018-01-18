@@ -17,14 +17,15 @@ namespace Wrapper
     };
 
     NeuralNetworkWrapper(int* layer, const int size);
-    void TrainNetwork(double* trainingData, double* expectedData, int dataSetSize, int iterations, bool silent);
+    void Clear();
+    void TrainNetwork(double* trainingData, double* expectedData, int dataSetSize, int iterations);
     void FeedForward(double* inputs, double** retVal);
     void ExportNeuralNetwork(ExportType type);
   
     NeuralNetwork* pNN;
 
   private:
-    std::vector<double*> ConvertToVectorDouble(double* input, int* rows, int* columns, std::vector<double*> output);
+    std::vector<double*> ConvertToVectorDouble(double* input, int rows, int columns, std::vector<double*> output);
     void ExportCSV();
 
     int* _layer;
