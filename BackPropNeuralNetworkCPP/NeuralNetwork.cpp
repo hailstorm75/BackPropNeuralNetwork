@@ -4,7 +4,9 @@
 
 #pragma region Constructor
 
+//--------------------------------------------------
 NeuralNetwork::NeuralNetwork(int* layer, const int size)
+//--------------------------------------------------
 {
   // Checking inputs
   if (layer == nullptr || size == NULL)
@@ -17,9 +19,11 @@ NeuralNetwork::NeuralNetwork(int* layer, const int size)
     layers.push_back(Layer(this->layer[l], this->layer[l + 1]));
 }
 
+//--------------------------------------------------
 void NeuralNetwork::Clear()
+//--------------------------------------------------
 {
-  for (auto i = 0; i < layers.size(); ++i) layers[i].Clear();
+  for (unsigned i = 0; i < layers.size(); ++i) layers[i].Clear();
 
   layers.clear();
 }
@@ -28,7 +32,9 @@ void NeuralNetwork::Clear()
 
 #pragma region Methods
 
+//--------------------------------------------------
 void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<double*> outputData, int iterations)
+//--------------------------------------------------
 {
   // Checking inputs
   if (inputData.size() <= 0 || outputData.size() <= 0)
@@ -40,9 +46,9 @@ void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<dou
 
   auto division = iterations / 100;
 
-  for (auto iteration = 0; iteration < iterations; iteration++)
+  for (int iteration = 0; iteration < iterations; iteration++)
   {
-    for (auto in = 0; in < inputData.size(); in++)
+    for (unsigned in = 0; in < inputData.size(); in++)
     {
       FeedForward(inputData[in]);
       BackPropagate(outputData[in]);
@@ -50,7 +56,9 @@ void NeuralNetwork::TrainNetwork(std::vector<double*> inputData, std::vector<dou
   }
 }
 
+//--------------------------------------------------
 void NeuralNetwork::FeedForward(double* inputs, double** retVal)
+//--------------------------------------------------
 {
   // Checking input
   if (inputs == nullptr)
@@ -65,7 +73,9 @@ void NeuralNetwork::FeedForward(double* inputs, double** retVal)
     *retVal = layers[layersLength - 1].outputs;
 }
 
+//--------------------------------------------------
 void NeuralNetwork::BackPropagate(double* expected)
+//--------------------------------------------------
 {
   // Checking input
   if (expected == nullptr)
@@ -83,15 +93,6 @@ void NeuralNetwork::BackPropagate(double* expected)
 
   for (l = 0; l < layersLength; l++)
     layers[l].UpdateWeights();
-}
-
-#pragma endregion
-
-#pragma region Unit Testing
-
-int* NeuralNetwork::GetLayer() const
-{
-  return layer;
 }
 
 #pragma endregion

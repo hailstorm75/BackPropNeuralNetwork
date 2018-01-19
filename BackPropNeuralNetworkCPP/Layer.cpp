@@ -3,13 +3,14 @@
 
 #pragma region Constructor
 
+//--------------------------------------------------
 Layer::Layer(int numberOfInputs, int numberOfOutputs)
+//--------------------------------------------------
 {
   this->numberOfInputs = numberOfInputs;
   this->numberOfOutputs = numberOfOutputs;
 
   // 1D Arrays
-  inputs = static_cast<double *>(malloc(this->numberOfInputs * sizeof(double)));
   outputs = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
   gamma = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
   error = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
@@ -21,10 +22,10 @@ Layer::Layer(int numberOfInputs, int numberOfOutputs)
   InitilizeWeights();
 }
 
+//--------------------------------------------------
 void Layer::Clear()
+//--------------------------------------------------
 {
-  // TODO Fix overflow
-  //free(inputs);
   free(outputs);
   free(gamma);
   free(error);
@@ -36,7 +37,9 @@ void Layer::Clear()
 
 #pragma region Methods
 
+//-------------------------------------------------- 
 void Layer::InitilizeWeights() const
+//-------------------------------------------------- 
 {
   std::random_device rd;
   std::default_random_engine generator(rd());
@@ -47,7 +50,9 @@ void Layer::InitilizeWeights() const
       weights[col * this->numberOfInputs + row] = distribution(generator);
 }
 
+//--------------------------------------------------
 void Layer::FeedForward(double* inputs, double** retVal)
+//--------------------------------------------------
 {
   if (inputs == nullptr)
     throw std::logic_error("Invalid argument -> Layer::FeedForward(...)");
@@ -67,17 +72,23 @@ void Layer::FeedForward(double* inputs, double** retVal)
   if (retVal != nullptr) *retVal = outputs;
 }
 
+//--------------------------------------------------
 double Layer::ActivateFunction(double value)
+//--------------------------------------------------
 {
   return tanh(value);
 }
 
+//--------------------------------------------------
 double Layer::DeriveFunction(double value)
+//--------------------------------------------------
 {
   return 1 - value * value;
 }
 
+//--------------------------------------------------
 void Layer::BackPropOutput(double* expected)
+//--------------------------------------------------
 {
   // Checking input
   if (expected == nullptr)
@@ -96,7 +107,9 @@ void Layer::BackPropOutput(double* expected)
       weightsDelta[out * numberOfInputs + in] = gamma[out] * inputs[in];
 }
 
+//--------------------------------------------------
 void Layer::BackPropHidden(double* gammaForward, double* weightsForward)
+//--------------------------------------------------
 {
   // Checking inputs
   if (gammaForward == nullptr || weightsForward == nullptr)
@@ -108,7 +121,7 @@ void Layer::BackPropHidden(double* gammaForward, double* weightsForward)
   {
     gamma[out] = 0;
 
-    for (in = 0; in < _msize(gammaForward) / (int)sizeof(double); ++in)
+    for (in = 0; in < (int)_msize(gammaForward) / (int)sizeof(double); ++in)
       gamma[out] += gammaForward[in] * weightsForward[in * numberOfOutputs + out];
 
     gamma[out] *= DeriveFunction(outputs[out]);
@@ -119,7 +132,9 @@ void Layer::BackPropHidden(double* gammaForward, double* weightsForward)
       weightsDelta[out * numberOfInputs + in] = gamma[out] * inputs[in];
 }
 
+//--------------------------------------------------
 void Layer::UpdateWeights() const
+//--------------------------------------------------
 {
   for (auto out = 0; out < numberOfOutputs; ++out)
     for (auto in = 0; in < numberOfInputs; ++in)
@@ -127,3 +142,4 @@ void Layer::UpdateWeights() const
 }
 
 #pragma endregion
+

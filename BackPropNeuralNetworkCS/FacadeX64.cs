@@ -56,7 +56,9 @@ namespace NeuralNetworkFacadeCS
     /// <param name="layers"></param>
     /// <param name="trainingData">Data to feed to the network</param>
     /// <param name="expectedData">Data the network is expected to output</param>
+    //--------------------------------------------------
     public FacadeX64(int[] layers, double[,] trainingData, double[,] expectedData)
+    //--------------------------------------------------
     {
       Convert2DArrayTo1D(trainingData, out _trainingData);
       Convert2DArrayTo1D(expectedData, out _expectedData);
@@ -72,7 +74,9 @@ namespace NeuralNetworkFacadeCS
     /// Training mode constructor
     /// </summary>
     /// <param name="pathToCSV">Path to saved neural network settings</param>
+    //--------------------------------------------------
     public FacadeX64(string pathToCSV, EventHandler trainingComplete)
+    //--------------------------------------------------
     {
       TrainingComplete = trainingComplete;
       _mode = Mode.WithoutTraining;
@@ -87,14 +91,18 @@ namespace NeuralNetworkFacadeCS
     #region Methods
 
     /// <summary>
-    /// 
+    /// Exports a snapshot of the Neural Network to a CSV
     /// </summary>
+    //--------------------------------------------------
     public void ExportToCSV() => _net.ExportNeuralNetwork(NeuralNetworkWrapper.ExportType.CSV);
+    //--------------------------------------------------
 
     /// <summary>
     /// Initiates network training using given dataset
     /// </summary>
+    //--------------------------------------------------
     public void TrainNetwork()
+    //--------------------------------------------------
     {
       unsafe
       {
@@ -114,12 +122,16 @@ namespace NeuralNetworkFacadeCS
     /// <summary>
     /// Clears memory allocated by the network
     /// </summary>
+    //--------------------------------------------------
     public void Clear() => _net.Clear();
+    //--------------------------------------------------
 
     /// <summary>
     /// Initializes the network
     /// </summary>
+    //--------------------------------------------------
     private void Initialize()
+    //--------------------------------------------------
     {
       unsafe
       {
@@ -136,7 +148,9 @@ namespace NeuralNetworkFacadeCS
     /// </summary>
     /// <param name="totalError">Average error for the dataset</param>
     /// <param name="stability">True if the prediction accuracy is greater or equals to 95</param>
+    //--------------------------------------------------
     public void OutputTestResult(ref double totalError, ref bool stability)
+    //--------------------------------------------------
     {
       if (_mode == Mode.WithTraining)
       {
@@ -158,7 +172,7 @@ namespace NeuralNetworkFacadeCS
         }
 
         var e = 1 - error / _expectedData.Length;
-        var accuracy = 100 * e;        
+        var accuracy = 100 * e;
         var success = accuracy >= 95.0;
 
         stability &= success;
@@ -172,14 +186,18 @@ namespace NeuralNetworkFacadeCS
     /// <param name="expected">Expected value</param>
     /// <param name="received">Predicted value</param>
     /// <returns>Error</returns>
+    //--------------------------------------------------
     private static double CalculateError(double expected, double received) => expected == 0 ? Math.Abs(received) : expected - Math.Abs(received);
+    //--------------------------------------------------
 
     /// <summary>
     /// Rearranges the elements of a 2D array into a 1D array
     /// </summary>
     /// <param name="input">2D array</param>
     /// <param name="output">1D array</param>
+    //--------------------------------------------------
     private static void Convert2DArrayTo1D(double[,] input, out double[] output)
+    //--------------------------------------------------
     {
       output = new double[input.Length];
 
@@ -202,3 +220,4 @@ namespace NeuralNetworkFacadeCS
     #endregion
   }
 }
+

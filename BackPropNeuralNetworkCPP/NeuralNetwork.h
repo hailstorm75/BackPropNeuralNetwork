@@ -44,12 +44,6 @@ public:
 
 #pragma endregion
 
-#pragma region Unit Testing
-
-  int* GetLayer() const;
-
-#pragma endregion
-
 #pragma region Fields
 
   int layersLength;

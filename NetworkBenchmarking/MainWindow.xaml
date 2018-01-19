@@ -5,29 +5,68 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NetworkBenchmarking"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-  <Grid>
+        Loaded="Window_Loaded"
+        Title="NN Benchmarker" Height="350" Width="525">
+  <Grid x:Name="grid">
     <Grid.ColumnDefinitions>
       <ColumnDefinition></ColumnDefinition>
       <ColumnDefinition></ColumnDefinition>
     </Grid.ColumnDefinitions>
-    <DockPanel Grid.Column="0">
-      <Button DockPanel.Dock="Bottom" Margin="10, 5, 5, 10" Content="Start" Click="Button_Click"/>
-      <TextBox DockPanel.Dock="Top" x:Name="textBox" HorizontalAlignment="Left" Height="260" Margin="10,10,0,10" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="238" />
+    <DockPanel x:Name="dockPanel" Grid.Column="0">
+      <Button x:Name="btn_Start" DockPanel.Dock="Bottom" Margin="10, 5, 10, 10" Content="Start" Click="Button_Click">
+        <Button.Style>
+          <Style TargetType="{x:Type Button}">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Text.Length, ElementName=txt_inputs, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                <Setter Property="IsEnabled" Value="False"/>
+              </DataTrigger>
+              <DataTrigger Binding="{Binding Text.Length, ElementName=txt_outputs, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                <Setter Property="IsEnabled" Value="False"/>
+              </DataTrigger>
+              <DataTrigger Binding="{Binding Text.Length, ElementName=txt_min, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                <Setter Property="IsEnabled" Value="False"/>
+              </DataTrigger>
+              <DataTrigger Binding="{Binding Text.Length, ElementName=txt_max, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                <Setter Property="IsEnabled" Value="False"/>
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </Button.Style>
+      </Button>
+      <TextBox DockPanel.Dock="Top" x:Name="textBox" Margin="10,10,10,10" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </DockPanel>
     <StackPanel Grid.Column="1">
-      <Label Content="Iterations"/>
+      <!-- Iterations -->
+      <DockPanel>
+        <Label DockPanel.Dock="Left" Content="Benchmarking iterations:"/>
+        <Label DockPanel.Dock="Right" Content="{Binding Value, ElementName=sld_iterations}"/>
+      </DockPanel>
       <Slider Name="sld_iterations" Margin="10, 0, 10, 0" Minimum="1" Maximum="10" Value="5" IsSnapToTickEnabled="True" TickFrequency="1"/>
-      <Label Content="Network I/O count"/>
-      <Grid Margin="10, 0, 10 0">
+      <!-- Network IO -->
+      <Label Content="Network I/O count:"/>
+      <Grid Margin="10, 0, 10, 5">
         <Grid.ColumnDefinitions>
           <ColumnDefinition/>
           <ColumnDefinition Width="10" />
           <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBox Name="txt_inputs" Grid.Column="0" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
-        <TextBox Name="txt_outputs" Grid.Column="2" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
+        <TextBox Name="txt_inputs" TextAlignment="Center" Padding="2" Grid.Column="0" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
+        <TextBox Name="txt_outputs" TextAlignment="Center" Padding="2" Grid.Column="2" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
       </Grid>
+      <!-- Network hidden -->
+      <Label Content="Hidden layer neurons min/max:"/>
+      <Grid Margin="10, 0, 10, 5">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition/>
+          <ColumnDefinition Width="10" />
+          <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBox Name="txt_min" TextAlignment="Center" Padding="2" Grid.Column="0" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
+        <TextBox Name="txt_max" TextAlignment="Center" Padding="2" Grid.Column="2" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
+      </Grid>
+      <!-- Dataset type -->
+      <Label Content="Generate test data with:"/>
+      <ComboBox x:Name="cmb_DataType" Margin="10, 0, 10, 10" SelectedIndex="0"/>
     </StackPanel>
   </Grid>
 </Window>

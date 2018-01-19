@@ -34,7 +34,9 @@ namespace NetworkBenchmarking
     /// <param name="inputCount">Number of elements in <see cref="TrainingData"/></param>
     /// <param name="outputCount">Number of elements in <see cref="ExpectedData"/></param>
     /// <param name="operationType">Logical operation which is to be applied to <see cref="TrainingData"/> values to create <see cref="ExpectedData"/></param>
+    //--------------------------------------------------
     public DataGenerator(int inputCount, int outputCount)
+    //--------------------------------------------------
     {
       if (inputCount <= 2 || outputCount < 1)
         throw new ArgumentException("Invalid input or output count.");
@@ -53,7 +55,9 @@ namespace NetworkBenchmarking
     /// Generates a truth table
     /// </summary>
     /// <param name="inputCount">Number of elements in truth table</param>
+    //--------------------------------------------------
     public double[,] GenerateTrainingData()
+    //--------------------------------------------------
     {
       // Initializing array
       var trainingData = new double[(int)Math.Pow(2, _inputCount), _inputCount];
@@ -86,7 +90,9 @@ namespace NetworkBenchmarking
     /// </summary>
     /// <param name="outputCount">Number of elements in <see cref="ExpectedData"/></param>
     /// <param name="operationType">Logical operation which is to be applied to <see cref="TrainingData"/> values to create <see cref="ExpectedData"/></param>
+    //--------------------------------------------------
     public double[,] GenerateExpectedData(ref double[,] trainingData, Operation operationType)
+    //--------------------------------------------------
     {
       // Initializing array
       var expectedData = new double[trainingData.GetLength(0), _outputCount];
@@ -117,7 +123,9 @@ namespace NetworkBenchmarking
     /// <param name="b">Second input parameter</param>
     /// <param name="operation">Boolean operation</param>
     /// <returns>Result</returns>
+    //--------------------------------------------------
     private static double Evaluate(ref double a, ref double b, ref Operation operation)
+    //--------------------------------------------------
     {
       if (a > 1 || b > 1)
         throw new ArgumentException("Argument values aren't equal to 1 or 0.");
@@ -148,3 +156,4 @@ namespace NetworkBenchmarking
     #endregion
   }
 }
+

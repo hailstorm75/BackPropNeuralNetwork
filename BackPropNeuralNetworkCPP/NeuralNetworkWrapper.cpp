@@ -4,7 +4,9 @@
 
 #pragma region Constructor
 
+//--------------------------------------------------
 Wrapper::NeuralNetworkWrapper::NeuralNetworkWrapper(int* layer, const int size)
+//--------------------------------------------------
 {
   if (layer == nullptr || size == 0)
     throw std::logic_error("Invalid argument -> NeuralNetworkWrapper::NeuralNetworkWrapper(...)");
@@ -13,7 +15,9 @@ Wrapper::NeuralNetworkWrapper::NeuralNetworkWrapper(int* layer, const int size)
   pNN = new NeuralNetwork(layer, size);
 }
 
+//--------------------------------------------------
 void Wrapper::NeuralNetworkWrapper::Clear()
+//--------------------------------------------------
 {
   pNN->Clear();
 }
@@ -22,12 +26,14 @@ void Wrapper::NeuralNetworkWrapper::Clear()
 
 #pragma region Methods
 
+//--------------------------------------------------
 void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* expectedData, int dataSetSize, int iterations)
+//--------------------------------------------------
 {
   if (trainingData == nullptr || expectedData == nullptr || dataSetSize == 0 || iterations <= 0)
     throw std::logic_error("Invalid argument -> NeuralNetworkWrapper::TrainNetwork(...)");
 
-  int* layer = pNN->GetLayer();
+  int* layer = pNN->layer;
 
   std::vector<double *> _trainingData;
     std::vector<double *> _expectedData;
@@ -46,7 +52,9 @@ void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* e
     free(_expectedData[i]);
 }
 
+//--------------------------------------------------
 void Wrapper::NeuralNetworkWrapper::FeedForward(double* inputs, double** retVal)
+//--------------------------------------------------
 {
   if (inputs == nullptr || retVal == nullptr)
     throw std::logic_error("Invalid argument -> NeuralNetworkWrapper::FeedForward(...)");
@@ -54,7 +62,9 @@ void Wrapper::NeuralNetworkWrapper::FeedForward(double* inputs, double** retVal)
   pNN->FeedForward(inputs, retVal);
 }
 
+//--------------------------------------------------
 std::vector<double*> Wrapper::NeuralNetworkWrapper::ConvertToVectorDouble(double* input, int rows, int columns, std::vector<double*> output)
+//--------------------------------------------------
 {
   // TODO Avoid copying data, resolve with pointers
   for (auto i = 0; i < rows; i++)
@@ -72,7 +82,9 @@ std::vector<double*> Wrapper::NeuralNetworkWrapper::ConvertToVectorDouble(double
 
 #pragma region Export
 
+//--------------------------------------------------
 void Wrapper::NeuralNetworkWrapper::ExportNeuralNetwork(ExportType type)
+//--------------------------------------------------
 {
   switch (type)
   {
@@ -82,7 +94,9 @@ void Wrapper::NeuralNetworkWrapper::ExportNeuralNetwork(ExportType type)
   }
 }
 
+//--------------------------------------------------
 void Wrapper::NeuralNetworkWrapper::ExportCSV()
+//--------------------------------------------------
 {
   std::stringstream ss;
   std::ofstream exportFile;

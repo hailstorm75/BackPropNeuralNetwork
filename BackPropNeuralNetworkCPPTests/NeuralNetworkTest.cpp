@@ -15,7 +15,9 @@ namespace BackPropNeuralNetworkCPPTests
   public:
     wchar_t * nullpointerEx = L"Nullpointer invalid argument not caught.";
 
+    //--------------------------------------------------
     TEST_METHOD(NeuralNetworkTestConstructor_Null)
+    //--------------------------------------------------
     {
       bool caughtException;
 
@@ -32,7 +34,9 @@ namespace BackPropNeuralNetworkCPPTests
       Assert::IsTrue(caughtException, nullpointerEx);
     }
 
+    //--------------------------------------------------
     TEST_METHOD(NeuralNetworkTestConstructor_NoSize)
+    //--------------------------------------------------
     {
       bool caughtException;
 
@@ -49,15 +53,19 @@ namespace BackPropNeuralNetworkCPPTests
       Assert::IsTrue(caughtException, nullpointerEx);
     }
 
+    //--------------------------------------------------
     TEST_METHOD(NeuralNetworkTest_layers)
+    //--------------------------------------------------
     {
       auto layer = new int[3]{ 3, 25, 1 };
       NeuralNetwork net(layer, 3);
 
-      Assert::IsTrue(CompareIntArrays(layer, net.GetLayer()), L"Array content");
+      Assert::IsTrue(CompareIntArrays(layer, net.layer), L"Array content");
     }
 
+    //--------------------------------------------------
     TEST_METHOD(NeuralNetworkTest_TrainNetwork)
+    //--------------------------------------------------
     {
       auto layer = new int[3]{ 3, 25, 1 };
       NeuralNetwork net(layer, 3);
@@ -77,7 +85,9 @@ namespace BackPropNeuralNetworkCPPTests
       Assert::IsTrue(caughtException, nullpointerEx);
     }
 
+    //--------------------------------------------------
     TEST_METHOD(NeuralNetworkTest_FeedForward)
+    //--------------------------------------------------
     {
       auto layer = new int[3]{ 3, 25, 1 };
       NeuralNetwork net(layer, 3);
@@ -97,7 +107,9 @@ namespace BackPropNeuralNetworkCPPTests
       Assert::IsTrue(caughtException, nullpointerEx);
     }
 
+    //--------------------------------------------------
     TEST_METHOD(NeuralNetworkTest_BackPropagate)
+    //--------------------------------------------------
     {
       auto layer = new int[3]{ 3, 25, 1 };
       NeuralNetwork net(layer, 3);
@@ -118,3 +130,4 @@ namespace BackPropNeuralNetworkCPPTests
     }
   };
 }
+
