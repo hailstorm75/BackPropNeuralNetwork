@@ -47,7 +47,7 @@ namespace NetworkBenchmarking
           // Training network
           net.TrainNetwork();
           // Evaluating gathered information
-          net.OutputToConsoleTest(ref totalError, ref stable);
+          net.OutputTestResult(ref totalError, ref stable);
           // Clearing memory
           net.Clear();
         }

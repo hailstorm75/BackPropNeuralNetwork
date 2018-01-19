@@ -19,7 +19,7 @@ NeuralNetwork::NeuralNetwork(int* layer, const int size)
 
 void NeuralNetwork::Clear()
 {
-  for (auto i = 0; i < layers.size(); ++i) layers[i].~Layer();
+  for (auto i = 0; i < layers.size(); ++i) layers[i].Clear();
 
   layers.clear();
 }

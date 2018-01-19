@@ -41,6 +41,9 @@ namespace NeuralNetworkFacadeCS
     /// </summary>
     private double[] _expectedData;
 
+    /// <summary>
+    /// Rows of data
+    /// </summary>
     private int _dataSize;
 
     #endregion
@@ -86,11 +89,11 @@ namespace NeuralNetworkFacadeCS
     /// <summary>
     /// 
     /// </summary>
-    public void ExportToCSV()
-    {
-      _net.ExportNeuralNetwork(NeuralNetworkWrapper.ExportType.CSV);
-    }
+    public void ExportToCSV() => _net.ExportNeuralNetwork(NeuralNetworkWrapper.ExportType.CSV);
 
+    /// <summary>
+    /// Initiates network training using given dataset
+    /// </summary>
     public void TrainNetwork()
     {
       unsafe
@@ -108,8 +111,14 @@ namespace NeuralNetworkFacadeCS
       OnTrainingComplete(EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Clears memory allocated by the network
+    /// </summary>
     public void Clear() => _net.Clear();
 
+    /// <summary>
+    /// Initializes the network
+    /// </summary>
     private void Initialize()
     {
       unsafe
@@ -122,7 +131,12 @@ namespace NeuralNetworkFacadeCS
       }
     }
 
-    public void OutputToConsoleTest(ref double totalError, ref bool stability)
+    /// <summary>
+    /// Runs a single feed forward to detirnmin Network <paramref name="stability"/> and <paramref name="totalError"/>
+    /// </summary>
+    /// <param name="totalError">Average error for the dataset</param>
+    /// <param name="stability">True if the prediction accuracy is greater or equals to 95</param>
+    public void OutputTestResult(ref double totalError, ref bool stability)
     {
       if (_mode == Mode.WithTraining)
       {
@@ -152,8 +166,19 @@ namespace NeuralNetworkFacadeCS
       }
     }
 
+    /// <summary>
+    /// Calculates the error based on <paramref name="expected"/> and <paramref name="received"/> values
+    /// </summary>
+    /// <param name="expected">Expected value</param>
+    /// <param name="received">Predicted value</param>
+    /// <returns>Error</returns>
     private static double CalculateError(double expected, double received) => expected == 0 ? Math.Abs(received) : expected - Math.Abs(received);
 
+    /// <summary>
+    /// Rearranges the elements of a 2D array into a 1D array
+    /// </summary>
+    /// <param name="input">2D array</param>
+    /// <param name="output">1D array</param>
     private static void Convert2DArrayTo1D(double[,] input, out double[] output)
     {
       output = new double[input.Length];

@@ -23,7 +23,8 @@ Layer::Layer(int numberOfInputs, int numberOfOutputs)
 
 void Layer::Clear()
 {
-  free(inputs);
+  // TODO Fix overflow
+  //free(inputs);
   free(outputs);
   free(gamma);
   free(error);
@@ -107,7 +108,7 @@ void Layer::BackPropHidden(double* gammaForward, double* weightsForward)
   {
     gamma[out] = 0;
 
-    for (in = 0; in < _msize(gammaForward) / sizeof(double); ++in)
+    for (in = 0; in < _msize(gammaForward) / (int)sizeof(double); ++in)
       gamma[out] += gammaForward[in] * weightsForward[in * numberOfOutputs + out];
 
     gamma[out] *= DeriveFunction(outputs[out]);
