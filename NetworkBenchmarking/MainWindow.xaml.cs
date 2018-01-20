@@ -19,6 +19,20 @@ namespace NetworkBenchmarking
       InitializeComponent();
     }
 
+    // TODO Move to Viewmodel
+
+    #region Fields
+
+    private struct TestData
+    {
+      public int[] neurons;
+      public double totalError;
+    }
+
+    private bool closing = false; 
+
+    #endregion
+
     #region Methods
 
     /// <summary>
@@ -26,19 +40,20 @@ namespace NetworkBenchmarking
     /// </summary>
     /// <returns></returns>
     //--------------------------------------------------
-    private async Task Benchmark()
+    private async Task<List<TestData>> Benchmark()
     //--------------------------------------------------
     {
       // Setting up data generator
-      var gen = new DataGenerator(4, 3);
+      var gen = new DataGenerator(int.Parse(txt_inputs.Text), int.Parse(txt_outputs.Text));
       // Getting test iterations count
       var iterations = sld_iterations.Value;
+      // 1 Percent of progress
+      double progress = int.Parse(txt_max.Text) - int.Parse(txt_min.Text) + 1;
       // Data
-      double[,] trainingData, expectedData;
-
-      trainingData = gen.GenerateTrainingData();
-      expectedData = gen.GenerateExpectedData(ref trainingData, (DataGenerator.Operation)cmb_DataType.SelectedItem);
-
+      var trainingData = gen.GenerateTrainingData();
+      var expectedData = gen.GenerateExpectedData(ref trainingData, (DataGenerator.Operation)cmb_DataType.SelectedItem);
+      // Benchmark result
+      List<TestData> result = new List<TestData>();
 
       for (int i = int.Parse(txt_min.Text); i <= int.Parse(txt_max.Text); ++i)
       {
@@ -47,6 +62,8 @@ namespace NetworkBenchmarking
         // An average error of all tests combined
         var totalError = 0.0;
 
+        if (closing) return null;
+        
         await Task.Run(() =>
         {
           // Getting hidden layer definition
@@ -63,15 +80,29 @@ namespace NetworkBenchmarking
             net.OutputTestResult(ref totalError, ref stable);
             // Clearing memory
             net.Clear();
+            // Check if stable
+            if (!stable) break;
+
+            // Update progress
+            prg_Progress.Dispatcher.Invoke(callback: () => prg_Progress.Value += 100 / (progress * iterations));
           }
         });
 
-        // Test summary
+        // Saving stable result
+        if (stable) result.Add(new TestData { neurons = new int[] { i }, totalError = totalError / iterations });
+
         await textBox.Dispatcher.InvokeAsync(() =>
         {
+          // Test summary
           textBox.Text += $"Hidden neurons: {i}\nStability: {(stable ? "Stable" : "Unstable")}\nError: {totalError / iterations}\n\n";
+          // Update progress
+          prg_Progress.Value = (100 / progress) * i;
+          // Update progress in taskbar
+          TaskbarItemInfo.ProgressValue = prg_Progress.Value / 100;
         });
       }
+
+      return result;
     }
 
     //--------------------------------------------------
@@ -91,19 +122,41 @@ namespace NetworkBenchmarking
     //--------------------------------------------------
     {
       btn_Start.IsEnabled = false;
+      prg_Progress.Value = 0;
+      TaskbarItemInfo.ProgressValue = 0;
 
       if (int.Parse(txt_min.Text) <= int.Parse(txt_max.Text))
       {
         textBox.Text = "Starting benchmark.\n";
-        await Benchmark();
-        textBox.Text += "Benchmark finished."; 
+        var data = await Benchmark();
+        
+        textBox.Text += "Benchmark finished.\n";
+        if (data.Count != 0)
+        {
+          var byAccuracy = data.Select(x => x).OrderByDescending(x => x.totalError).First();
+          textBox.Text += $"Most accurate:\n\tNeurons - {string.Join(",", byAccuracy.neurons)}\n\tError - {byAccuracy.totalError.ToString()}\n";
+          var byNeurons = data.Select(x => x).OrderBy(x => x.neurons.Sum()).First();
+          textBox.Text += $"Least neurons:\n\tNeurons - {string.Join(",", byNeurons.neurons)}\n\tError - {byNeurons.totalError.ToString()}";
+        }
+        else textBox.Text += "No stable networks generated.";
       }
       else textBox.Text = "Invalid hidden layer min/max.\n";
 
       btn_Start.IsEnabled = true;
+      prg_Progress.Value = 0;
+      TaskbarItemInfo.ProgressValue = 0;
     }
 
+    //--------------------------------------------------
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    //--------------------------------------------------
+    {
+      closing = true;
+    }
+
+    //--------------------------------------------------
     private void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
+    //--------------------------------------------------
     {
       cmb_DataType.ItemsSource = Enum.GetValues(typeof(DataGenerator.Operation)).Cast<DataGenerator.Operation>();
     }

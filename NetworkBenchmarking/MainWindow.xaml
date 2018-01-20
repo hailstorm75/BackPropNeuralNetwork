@@ -3,70 +3,93 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NetworkBenchmarking"
+        xmlns:local="clr-namespace:NetworkBenchmarking"     
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="NN Benchmarker" Height="350" Width="525">
+        Title="NN Benchmarker" Height="370" Width="525" MinHeight="370" MinWidth="525" Closing="Window_Closing">
+  <Window.TaskbarItemInfo>
+    <TaskbarItemInfo Description="NN Benchmarker" ProgressState="Normal"/>
+  </Window.TaskbarItemInfo>
   <Grid x:Name="grid">
     <Grid.ColumnDefinitions>
       <ColumnDefinition></ColumnDefinition>
       <ColumnDefinition></ColumnDefinition>
     </Grid.ColumnDefinitions>
-    <DockPanel x:Name="dockPanel" Grid.Column="0">
-      <Button x:Name="btn_Start" DockPanel.Dock="Bottom" Margin="10, 5, 10, 10" Content="Start" Click="Button_Click">
-        <Button.Style>
-          <Style TargetType="{x:Type Button}">
-            <Style.Triggers>
-              <DataTrigger Binding="{Binding Text.Length, ElementName=txt_inputs, UpdateSourceTrigger=PropertyChanged}" Value="0">
-                <Setter Property="IsEnabled" Value="False"/>
-              </DataTrigger>
-              <DataTrigger Binding="{Binding Text.Length, ElementName=txt_outputs, UpdateSourceTrigger=PropertyChanged}" Value="0">
-                <Setter Property="IsEnabled" Value="False"/>
-              </DataTrigger>
-              <DataTrigger Binding="{Binding Text.Length, ElementName=txt_min, UpdateSourceTrigger=PropertyChanged}" Value="0">
-                <Setter Property="IsEnabled" Value="False"/>
-              </DataTrigger>
-              <DataTrigger Binding="{Binding Text.Length, ElementName=txt_max, UpdateSourceTrigger=PropertyChanged}" Value="0">
-                <Setter Property="IsEnabled" Value="False"/>
-              </DataTrigger>
-            </Style.Triggers>
-          </Style>
-        </Button.Style>
-      </Button>
-      <TextBox DockPanel.Dock="Top" x:Name="textBox" Margin="10,10,10,10" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-    </DockPanel>
-    <StackPanel Grid.Column="1">
-      <!-- Iterations -->
-      <DockPanel>
-        <Label DockPanel.Dock="Left" Content="Benchmarking iterations:"/>
-        <Label DockPanel.Dock="Right" Content="{Binding Value, ElementName=sld_iterations}"/>
+    <Border Grid.Column="0" BorderThickness="0 0 1 0" BorderBrush="Black">
+      <DockPanel x:Name="dockPanel">
+        <Slider x:Name="slider" Value="12" Minimum="12" Maximum="24" DockPanel.Dock="Bottom" Margin="10"/>
+        <ScrollViewer Margin="10,10,10,10">
+          <TextBox DockPanel.Dock="Top" x:Name="textBox" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding Value, ElementName=slider}"/>
+        </ScrollViewer>
       </DockPanel>
-      <Slider Name="sld_iterations" Margin="10, 0, 10, 0" Minimum="1" Maximum="10" Value="5" IsSnapToTickEnabled="True" TickFrequency="1"/>
-      <!-- Network IO -->
-      <Label Content="Network I/O count:"/>
-      <Grid Margin="10, 0, 10, 5">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition/>
-          <ColumnDefinition Width="10" />
-          <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <TextBox Name="txt_inputs" TextAlignment="Center" Padding="2" Grid.Column="0" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
-        <TextBox Name="txt_outputs" TextAlignment="Center" Padding="2" Grid.Column="2" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
-      </Grid>
-      <!-- Network hidden -->
-      <Label Content="Hidden layer neurons min/max:"/>
-      <Grid Margin="10, 0, 10, 5">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition/>
-          <ColumnDefinition Width="10" />
-          <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <TextBox Name="txt_min" TextAlignment="Center" Padding="2" Grid.Column="0" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
-        <TextBox Name="txt_max" TextAlignment="Center" Padding="2" Grid.Column="2" Text="" PreviewTextInput="NumberValidationTextBox"></TextBox>
-      </Grid>
-      <!-- Dataset type -->
-      <Label Content="Generate test data with:"/>
-      <ComboBox x:Name="cmb_DataType" Margin="10, 0, 10, 10" SelectedIndex="0"/>
-    </StackPanel>
+    </Border>
+    <Border Grid.Column="1" BorderThickness="1 0 0 0" BorderBrush="Black">
+      <StackPanel>
+        <!-- Iterations -->
+        <DockPanel>
+          <Label DockPanel.Dock="Left" Content="Max iterations:"/>
+          <Label DockPanel.Dock="Right" Content="{Binding Value, ElementName=sld_iterations}"/>
+        </DockPanel>
+        <Slider Name="sld_iterations" Margin="10, 0, 10, 0" Minimum="5" Maximum="25" Value="5" IsSnapToTickEnabled="True" TickFrequency="5"/>
+        <!-- Network hidden -->
+        <Label Content="Hidden layer neurons min/max:"/>
+        <Grid Margin="10, 0, 10, 5">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition/>
+          </Grid.ColumnDefinitions>
+          <TextBox Name="txt_min" Text="1" TextAlignment="Center" Padding="2" Grid.Column="0" PreviewTextInput="NumberValidationTextBox"></TextBox>
+          <TextBox Name="txt_max" Text="8" TextAlignment="Center" Padding="2" Grid.Column="2" PreviewTextInput="NumberValidationTextBox"></TextBox>
+        </Grid>
+        <!-- Dataset type -->
+        <TabControl IsSynchronizedWithCurrentItem="True" Margin="10">
+          <TabItem Header="Generated">
+            <StackPanel>
+              <!-- Network IO -->
+              <Label Content="Network I/O count:"/>
+              <Grid Margin="10, 0, 10, 5">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition/>
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBox Name="txt_inputs" Text="4" TextAlignment="Center" Padding="2" Grid.Column="0" PreviewTextInput="NumberValidationTextBox"></TextBox>
+                <TextBox Name="txt_outputs" Text="3" TextAlignment="Center" Padding="2" Grid.Column="2" PreviewTextInput="NumberValidationTextBox"></TextBox>
+              </Grid>
+              <Label Content="Generate test data with:"/>
+              <ComboBox x:Name="cmb_DataType" Margin="10, 0, 10, 10" SelectedIndex="0"/>
+            </StackPanel>
+          </TabItem>
+          <TabItem Header="Loaded"></TabItem>
+        </TabControl>
+        <Button x:Name="btn_Start" Margin="10, 5, 10, 10" Content="Start" Click="Button_Click">
+          <Button.Style>
+            <Style TargetType="{x:Type Button}">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Text.Length, ElementName=txt_inputs, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                  <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Text.Length, ElementName=txt_outputs, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                  <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Text.Length, ElementName=txt_min, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                  <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Text.Length, ElementName=txt_max, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                  <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Button.Style>
+        </Button>
+        <Grid>
+          <ProgressBar Name="prg_Progress" Height="20" Margin="10, 0, 10, 0"/>
+          <TextBlock Text="{Binding ElementName=prg_Progress, Path=Value, StringFormat={}{0:0}%}" 
+           HorizontalAlignment="Center" 
+           VerticalAlignment="Center" />
+        </Grid>
+      </StackPanel>
+    </Border>
   </Grid>
 </Window>
