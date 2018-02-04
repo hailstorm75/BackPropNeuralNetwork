@@ -30,7 +30,7 @@ public:
   /**
   * \brief Layer destructor
   */
-  void Clear();
+  void Clear() const;
 
 #pragma endregion
 
@@ -71,14 +71,14 @@ public:
   * \brief Back propagation algorythm from output to penultimate layer
   * \param expected Expected result
   */
-  void BackPropOutput(double* expected);
+  void BackPropOutput(double* expected) const;
 
   /**
   * \brief Back propagation algorythm from penultimate to input layer
   * \param gammaForward
   * \param weightsForward
   */
-  void BackPropHidden(double* gammaForward, double* weightsForward);
+  void BackPropHidden(double* gammaForward, double* weightsForward) const;
 
 #pragma endregion
 

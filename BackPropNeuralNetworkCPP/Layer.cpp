@@ -23,7 +23,7 @@ Layer::Layer(int numberOfInputs, int numberOfOutputs)
 }
 
 //--------------------------------------------------
-void Layer::Clear()
+void Layer::Clear() const
 //--------------------------------------------------
 {
   free(outputs);
@@ -87,7 +87,7 @@ double Layer::DeriveFunction(double value)
 }
 
 //--------------------------------------------------
-void Layer::BackPropOutput(double* expected)
+void Layer::BackPropOutput(double* expected) const
 //--------------------------------------------------
 {
   // Checking input
@@ -108,7 +108,7 @@ void Layer::BackPropOutput(double* expected)
 }
 
 //--------------------------------------------------
-void Layer::BackPropHidden(double* gammaForward, double* weightsForward)
+void Layer::BackPropHidden(double* gammaForward, double* weightsForward) const
 //--------------------------------------------------
 {
   // Checking inputs
@@ -121,7 +121,7 @@ void Layer::BackPropHidden(double* gammaForward, double* weightsForward)
   {
     gamma[out] = 0;
 
-    for (in = 0; in < (int)_msize(gammaForward) / (int)sizeof(double); ++in)
+    for (in = 0; in < static_cast<int>(_msize(gammaForward)) / static_cast<int>(sizeof(double)); ++in)
       gamma[out] += gammaForward[in] * weightsForward[in * numberOfOutputs + out];
 
     gamma[out] *= DeriveFunction(outputs[out]);

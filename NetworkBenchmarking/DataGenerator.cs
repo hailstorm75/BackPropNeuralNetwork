@@ -54,7 +54,6 @@ namespace NetworkBenchmarking
     /// <summary>
     /// Generates a truth table
     /// </summary>
-    /// <param name="inputCount">Number of elements in truth table</param>
     //--------------------------------------------------
     public double[,] GenerateTrainingData()
     //--------------------------------------------------
@@ -88,7 +87,7 @@ namespace NetworkBenchmarking
     /// <summary>
     /// Generates <see cref="ExpectedData"/> by evaluating <see cref="TrainingData"/>
     /// </summary>
-    /// <param name="outputCount">Number of elements in <see cref="ExpectedData"/></param>
+    /// <param name="trainingData">Number of elements in <see cref="ExpectedData"/></param>
     /// <param name="operationType">Logical operation which is to be applied to <see cref="TrainingData"/> values to create <see cref="ExpectedData"/></param>
     //--------------------------------------------------
     public double[,] GenerateExpectedData(ref double[,] trainingData, Operation operationType)
