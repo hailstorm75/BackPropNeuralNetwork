@@ -7,42 +7,103 @@ using System.Windows.Input;
 
 namespace NetworkBenchmarking
 {
-  public class BenchmarkerViewModel : BaseViewModel, ICloseable
+  public class BenchmarkerViewModel : BaseViewModel
   {
     #region Properties
 
+    /// <summary>
+    /// Binding property to set selected operation type
+    /// </summary>
     public object OperationType { get; set; }
+    /// <summary>
+    /// Bidning property to set available operation type items
+    /// </summary>
     public IEnumerable OperationTypes { get; set; } = Enum.GetValues(typeof(DataGenerator.Operation)).Cast<DataGenerator.Operation>();
 
+    /// <summary>
+    /// Binding property to set UI elements enabled state
+    /// </summary>
     public bool UIEnabled { get; set; } = true;
+    /// <summary>
+    /// Binding property to set start button enabled state
+    /// </summary>
     public bool ButtonStartEnabled { get { return UIEnabled; } }
+    /// <summary>
+    /// Binding property to set cancel button enabled state
+    /// </summary>
     public bool ButtonCancelEnabled { get { return !UIEnabled; } }
+    /// <summary>
+    /// Binding property to set popup state
+    /// </summary>
+    public bool ToggleAddChecked { get; set; }
 
+    /// <summary>
+    /// Binding property to display progress
+    /// </summary>
     public double Progress { get; set; } = 0;
+    /// <summary>
+    /// Binding property to display progress in taskbar
+    /// </summary>
     public double ProgressTaskBar { get { return Progress / 100; } }
+    /// <summary>
+    /// Binding property to set number of iterations
+    /// </summary>
     public double InputIterations { get; set; } = 5;
 
+    /// <summary>
+    /// Binding property to display benchmark logging
+    /// </summary>
     public string OutputLog { get; set; }
+    /// <summary>
+    /// Binding property to set minimum hidden neurons
+    /// </summary>
     public string InputMinimum { get; set; } = "1";
+    /// <summary>
+    /// Binding property to set maximum hidden neurons
+    /// </summary>
     public string InputMaximum { get; set; } = "8";
+    /// <summary>
+    /// Binding property to set number of inputs
+    /// </summary>
     public string InputInputs { get; set; } = "4";
+    /// <summary>
+    /// Bidning property to set number of outputs
+    /// </summary>
     public string InputOutputs { get; set; } = "3";
 
     #endregion
 
     #region Commands
 
+    /// <summary>
+    /// Runs the benchmark
+    /// </summary>
     public ICommand RunBenchmarkCommand { get; set; }
+
+    /// <summary>
+    /// Aborts the benchmark
+    /// </summary>
     public ICommand CancelOperationCommand { get; set; }
-    public ICommand CloseCommand { get; set; }
 
     #endregion
 
     #region Fields
 
+    /// <summary>
+    /// Tracks benchmarking state
+    /// </summary>
     private bool _benchmarkRunning = false;
+    /// <summary>
+    /// Cancellation token for benchmarking process
+    /// </summary>
     private CancellationTokenSource _ct;
+    /// <summary>
+    /// Generated data from benchmark
+    /// </summary>
     private List<BenchmarkData> _benchmarkData;
+    /// <summary>
+    /// Benchmarking exit code which is generated upon completion
+    /// </summary>
     private enum ExitCodes
     {
       Normal = 0,
@@ -53,6 +114,9 @@ namespace NetworkBenchmarking
 
     #region Constructor
 
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     //--------------------------------------------------
     public BenchmarkerViewModel()
     //--------------------------------------------------
@@ -65,16 +129,19 @@ namespace NetworkBenchmarking
 
     #region Methods
 
+    /// <summary>
+    /// Runs the benchmark based on given settings
+    /// </summary>
     //--------------------------------------------------
     private async void RunBenchmark()
     //--------------------------------------------------
     {
+      _ct = new CancellationTokenSource();
       UIEnabled = false;
       Progress = 0;
 
       if (int.Parse(InputMinimum) <= int.Parse(InputMaximum))
       {
-        _ct = new CancellationTokenSource();
         var benchMarker = new Benchmarker(new BenchmarkSettings()
         {
           Inputs = int.Parse(InputInputs),
@@ -105,12 +172,21 @@ namespace NetworkBenchmarking
 
       UIEnabled = true;
       Progress = 0;
+
+      _ct.Dispose();
     }
 
+    /// <summary>
+    /// Cancels running benchmark operation
+    /// </summary>
     //--------------------------------------------------
     private void CancelOperation() => _ct?.Cancel();
     //--------------------------------------------------
-
+    
+    /// <summary>
+    /// Prevents window from closing if benchmark is running
+    /// </summary>
+    /// <param name="e">Closing event</param>
     //--------------------------------------------------
     public void CloseWindow(System.ComponentModel.CancelEventArgs e)
     //--------------------------------------------------
@@ -125,8 +201,6 @@ namespace NetworkBenchmarking
     #endregion
 
     #region Events
-
-    public event EventHandler RequestClose;
 
     //--------------------------------------------------
     private void BenchMarker_BenchmarkStarted(object sender, EventArgs e)
@@ -154,15 +228,13 @@ namespace NetworkBenchmarking
             OutputLog += $"Least neurons:\n\tNeurons - {string.Join(",", byNeurons.Neurons)}\n\tError - {byNeurons.Error}";
           }
           else OutputLog += "No stable networks generated.";
-
-          _benchmarkData.Clear();
           break;
         case ExitCodes.Cancelled:
           OutputLog += "Benchmark cancelled.\n";
-          RequestClose?.Invoke(this, EventArgs.Empty);
-          _benchmarkData.Clear();
           break;
       }
+
+      _benchmarkData.Clear();
     }
 
     //--------------------------------------------------

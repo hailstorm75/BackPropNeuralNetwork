@@ -20,8 +20,6 @@ namespace NetworkBenchmarking
       InitializeComponent();
 
       ViewModel = new BenchmarkerViewModel();
-      ViewModel.RequestClose += (s, e) => Close();
-      
       DataContext = ViewModel;     
     }
 

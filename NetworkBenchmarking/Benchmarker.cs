@@ -1,7 +1,7 @@
-﻿using NeuralNetworkFacadeCS;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NeuralNetworkFacadeCS;
 
 namespace NetworkBenchmarking
 {
@@ -11,6 +11,9 @@ namespace NetworkBenchmarking
 
     private static BenchmarkSettings _settings;
     private static Tuple<double[,], double[,]> _data;
+    private static IProgress<Tuple<double, bool>> _prg;
+    private static IProgress<BenchmarkData> _stat;
+    private static CancellationToken _ct;
 
     #endregion
 
@@ -35,18 +38,25 @@ namespace NetworkBenchmarking
     #region Methods
 
     /// <summary>
-    /// Benchmarks the NN
+    /// Initiates neural network benchmarking
     /// </summary>
-    /// <returns></returns>
+    /// <param name="prg">Progressbar percantage updater</param>
+    /// <param name="stat">Benchmark data updater</param>
+    /// <param name="ct">Cancellation token</param>
     //--------------------------------------------------
     public async Task RunAsync(IProgress<Tuple<double, bool>> prg, IProgress<BenchmarkData> stat, CancellationToken ct)
     //--------------------------------------------------
     {
       OnBenchmarkStarted(EventArgs.Empty);
 
+      _prg = prg;
+      _stat = stat;
+      _ct = ct;
+
       try
       {
-        for (var i = _settings.Minimum; i <= _settings.Maximum; ++i) await TestNetwork(i, prg, stat, ct);
+        for (var hiddenSet = _settings.Minimum; hiddenSet <= _settings.Maximum; ++hiddenSet)
+          await TestNetwork(hiddenSet);
       }
       catch (OperationCanceledException)
       {
@@ -57,8 +67,12 @@ namespace NetworkBenchmarking
       OnBenchmarkComplete(new BenchmarkCompleteArgs(0));
     }
 
+    /// <summary>
+    /// Tests a new instance of a neural network based on given settings
+    /// </summary>
+    /// <param name="hidden">Set of hidden layers</param>
     //--------------------------------------------------
-    private static async Task TestNetwork(int hidden, IProgress<Tuple<double, bool>> prg, IProgress<BenchmarkData> stat, CancellationToken ct)
+    private static async Task TestNetwork(int hidden)
     //--------------------------------------------------
     {
       // Test success
@@ -66,51 +80,59 @@ namespace NetworkBenchmarking
       // An average error of all tests combined
       var totalError = 0.0;
       // Check if canceled
-      ct.ThrowIfCancellationRequested();
+      _ct.ThrowIfCancellationRequested();
 
       await Task.Run(() =>
       {
         // Getting hidden layer definition
-        var layers = new[] { _data.Item1.GetLength(1), hidden, _data.Item2.GetLength(1) };
+        var layers = new[] { _settings.Inputs, hidden, _settings.Outputs };
+
         // Testing network
         for (var j = 0; j < _settings.Iterations; ++j)
         {
           // Initializing new network
           var net = new FacadeX64(layers, _data.Item1, _data.Item2);
+
           // Check if canceled
-          if (ct.IsCancellationRequested)
+          if (_ct.IsCancellationRequested)
           {
             net.Clear();
-            ct.ThrowIfCancellationRequested();
+            _ct.ThrowIfCancellationRequested();
           }
+
           // Training network
           net.TrainNetwork();
+
           // Check if canceled
-          if (ct.IsCancellationRequested)
+          if (_ct.IsCancellationRequested)
           {
             net.Clear();
-            ct.ThrowIfCancellationRequested();
+            _ct.ThrowIfCancellationRequested();
           }
+
           // Evaluating gathered information
           net.OutputTestResult(ref totalError, ref stable);
           // Clearing memory
           net.Clear();
+
           // Check if stable
           if (!stable) break;
+
           // Update progress
-          prg.Report(new Tuple<double, bool>(100 / (_settings.ProgressTick * _settings.Iterations), true));
+          _prg.Report(new Tuple<double, bool>(100 / (_settings.ProgressTick * _settings.Iterations), true));
         }
-      }, ct);
+      }, _ct);
 
       // Test summary
-      stat.Report(new BenchmarkData
+      _stat.Report(new BenchmarkData
       {
         Neurons = new[] { hidden },
         Error = totalError / _settings.Iterations,
         Stable = stable
       });
+
       // Update progress
-      prg.Report(new Tuple<double, bool>(100 / _settings.ProgressTick * hidden, false));
+      _prg.Report(new Tuple<double, bool>(100 / _settings.ProgressTick * hidden, false));
     }
 
     #endregion
@@ -130,6 +152,9 @@ namespace NetworkBenchmarking
   {
     #region Property
 
+    /// <summary>
+    /// Determins if the benchmark has finished correctly
+    /// </summary>
     public int ExitCode { get; private set; }
 
     #endregion
