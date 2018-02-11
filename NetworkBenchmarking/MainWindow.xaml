@@ -5,10 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NetworkBenchmarking"     
         mc:Ignorable="d"
-        Loaded="Window_Loaded"
         Title="NN Benchmarker" Height="370" Width="525" MinHeight="370" MinWidth="525" Closing="Window_Closing">
   <Window.TaskbarItemInfo>
-    <TaskbarItemInfo Description="NN Benchmarker" ProgressState="Normal"/>
+    <TaskbarItemInfo Description="NN Benchmarker" ProgressState="Normal" ProgressValue="{Binding ProgressTaskBar}"/>
   </Window.TaskbarItemInfo>
   <Grid x:Name="grid">
     <Grid.ColumnDefinitions>
@@ -19,7 +18,7 @@
       <DockPanel x:Name="dockPanel">
         <Slider x:Name="slider" Value="12" Minimum="12" Maximum="24" DockPanel.Dock="Bottom" Margin="10"/>
         <ScrollViewer Margin="10,10,10,10">
-          <TextBox DockPanel.Dock="Top" x:Name="textBox" TextWrapping="Wrap" Text="" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding Value, ElementName=slider}"/>
+          <TextBox DockPanel.Dock="Top" x:Name="textBox" TextWrapping="Wrap" Text="{Binding OutputLog}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding Value, ElementName=slider}"/>
         </ScrollViewer>
       </DockPanel>
     </Border>
@@ -30,7 +29,7 @@
           <Label DockPanel.Dock="Left" Content="Max iterations:"/>
           <Label DockPanel.Dock="Right" Content="{Binding Value, ElementName=sld_iterations}"/>
         </DockPanel>
-        <Slider Name="sld_iterations" Margin="10, 0, 10, 0" Minimum="5" Maximum="25" Value="5" IsSnapToTickEnabled="True" TickFrequency="5"/>
+        <Slider Name="sld_iterations" Margin="10, 0, 10, 0" Minimum="5" Maximum="25" Value="{Binding InputIterations, Mode=TwoWay}" IsSnapToTickEnabled="True" TickFrequency="5"/>
         <!-- Network hidden -->
         <Label Content="Hidden layer neurons min/max:"/>
         <Grid Margin="10, 0, 10, 5">
@@ -39,8 +38,8 @@
             <ColumnDefinition Width="10" />
             <ColumnDefinition/>
           </Grid.ColumnDefinitions>
-          <TextBox Name="txt_min" Text="1" TextAlignment="Center" Padding="2" Grid.Column="0" PreviewTextInput="NumberValidationTextBox"></TextBox>
-          <TextBox Name="txt_max" Text="8" TextAlignment="Center" Padding="2" Grid.Column="2" PreviewTextInput="NumberValidationTextBox"></TextBox>
+          <TextBox Name="txt_min" Text="{Binding InputMinimum, Mode=TwoWay}" TextAlignment="Center" Padding="2" Grid.Column="0"></TextBox>
+          <TextBox Name="txt_max" Text="{Binding InputMaximum, Mode=TwoWay}" TextAlignment="Center" Padding="2" Grid.Column="2"></TextBox>
         </Grid>
         <!-- Dataset type -->
         <TabControl IsSynchronizedWithCurrentItem="True" Margin="10">
@@ -54,37 +53,21 @@
                   <ColumnDefinition Width="10" />
                   <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBox Name="txt_inputs" Text="4" TextAlignment="Center" Padding="2" Grid.Column="0" PreviewTextInput="NumberValidationTextBox"></TextBox>
-                <TextBox Name="txt_outputs" Text="3" TextAlignment="Center" Padding="2" Grid.Column="2" PreviewTextInput="NumberValidationTextBox"></TextBox>
+                <TextBox Name="txt_inputs" Text="{Binding InputInputs, Mode=TwoWay}" TextAlignment="Center" Padding="2" Grid.Column="0"></TextBox>
+                <TextBox Name="txt_outputs" Text="{Binding InputOutputs, Mode=TwoWay}" TextAlignment="Center" Padding="2" Grid.Column="2"></TextBox>
               </Grid>
               <Label Content="Generate test data with:"/>
-              <ComboBox x:Name="cmb_DataType" Margin="10, 0, 10, 10" SelectedIndex="0"/>
+              <ComboBox x:Name="cmb_DataType" Margin="10, 0, 10, 10" SelectedIndex="0" SelectedItem="{Binding OperationType}" ItemsSource="{Binding OperationTypes}"/>
             </StackPanel>
           </TabItem>
           <TabItem Header="Loaded"></TabItem>
         </TabControl>
-        <Button x:Name="btn_Start" Margin="10, 5, 10, 10" Content="Start" Click="Button_Click">
-          <Button.Style>
-            <Style TargetType="{x:Type Button}">
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding Text.Length, ElementName=txt_inputs, UpdateSourceTrigger=PropertyChanged}" Value="0">
-                  <Setter Property="IsEnabled" Value="False"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Text.Length, ElementName=txt_outputs, UpdateSourceTrigger=PropertyChanged}" Value="0">
-                  <Setter Property="IsEnabled" Value="False"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Text.Length, ElementName=txt_min, UpdateSourceTrigger=PropertyChanged}" Value="0">
-                  <Setter Property="IsEnabled" Value="False"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Text.Length, ElementName=txt_max, UpdateSourceTrigger=PropertyChanged}" Value="0">
-                  <Setter Property="IsEnabled" Value="False"/>
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </Button.Style>
-        </Button>
+        <DockPanel Margin="10, 5, 10, 10" >
+          <Button DockPanel.Dock="Right" x:Name="btn_Cancel" Content="Cancel" Command="{Binding CancelOperationCommand}" IsEnabled="{Binding ButtonCancelEnabled, Mode=OneWay}" Margin="5,0,0,0"/>
+          <Button DockPanel.Dock="Left" x:Name="btn_Start" Content="Start" Command="{Binding RunBenchmarkCommand, IsAsync=True}" IsEnabled="{Binding ButtonStartEnabled, Mode=OneWay}" Margin="0,0,5,0"/>
+        </DockPanel>
         <Grid>
-          <ProgressBar Name="prg_Progress" Height="20" Margin="10, 0, 10, 0"/>
+          <ProgressBar Name="prg_Progress" Height="20" Margin="10, 0, 10, 0" Value="{Binding Progress, Mode=OneWay}"/>
           <TextBlock Text="{Binding ElementName=prg_Progress, Path=Value, StringFormat={}{0:0}%}" 
            HorizontalAlignment="Center" 
            VerticalAlignment="Center" />
