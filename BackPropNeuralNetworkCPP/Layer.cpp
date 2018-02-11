@@ -7,17 +7,25 @@
 Layer::Layer(int numberOfInputs, int numberOfOutputs)
 //--------------------------------------------------
 {
+  if (numberOfInputs <= 0 || numberOfOutputs <= 0)
+    throw std::logic_error("Invalid argument -> Layer::Layer(...)");
+
   this->numberOfInputs = numberOfInputs;
   this->numberOfOutputs = numberOfOutputs;
 
   // 1D Arrays
-  outputs = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
-  gamma = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
-  error = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
+  outputs.arr = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
+  outputs.size = this->numberOfOutputs;
+  gamma.arr = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
+  gamma.size = this->numberOfOutputs;
+  error.arr = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
+  error.size = this->numberOfOutputs;
 
   // 2D Arrays
-  weights = static_cast<double *>(malloc(this->numberOfOutputs * this->numberOfInputs * sizeof(double)));
-  weightsDelta = static_cast<double *>(malloc(this->numberOfOutputs * this->numberOfInputs * sizeof(double)));
+  weights.arr = static_cast<double *>(malloc(this->numberOfOutputs * this->numberOfInputs * sizeof(double)));
+  weights.size = this->numberOfInputs;
+  weightsDelta.arr = static_cast<double *>(malloc(this->numberOfOutputs * this->numberOfInputs * sizeof(double)));
+  weightsDelta.size = this->numberOfInputs;
 
   InitilizeWeights();
 }
@@ -26,11 +34,11 @@ Layer::Layer(int numberOfInputs, int numberOfOutputs)
 void Layer::Clear() const
 //--------------------------------------------------
 {
-  free(outputs);
-  free(gamma);
-  free(error);
-  free(weights);
-  free(weightsDelta);
+  free(outputs.arr);
+  free(gamma.arr);
+  free(error.arr);
+  free(weights.arr);
+  free(weightsDelta.arr);
 }
 
 #pragma endregion 
@@ -47,7 +55,7 @@ void Layer::InitilizeWeights() const
 
   for (auto col = 0; col < this->numberOfOutputs; ++col)
     for (auto row = 0; row < this->numberOfInputs; ++row)
-      weights[col * this->numberOfInputs + row] = distribution(generator);
+      weights.arr[col * this->numberOfInputs + row] = distribution(generator);
 }
 
 //--------------------------------------------------
@@ -57,19 +65,19 @@ void Layer::FeedForward(double* inputs, double** retVal)
   if (inputs == nullptr)
     throw std::logic_error("Invalid argument -> Layer::FeedForward(...)");
 
-  this->inputs = inputs;
+  this->inputs.arr = inputs;
 
-  for (auto out = 0; out < numberOfOutputs; ++out)
+  for (auto output = 0; output < numberOfOutputs; ++output)
   {
-    outputs[out] = 0;
+    outputs.arr[output] = 0;
 
-    for (auto in = 0; in < numberOfInputs; ++in)
-      outputs[out] += inputs[in] * weights[out * numberOfInputs + in];
+    for (auto input = 0; input < numberOfInputs; ++input)
+      outputs.arr[output] += inputs[input] * weights.arr[output * numberOfInputs + input];
 
-    outputs[out] = ActivateFunction(outputs[out]);
+    outputs.arr[output] = ActivateFunction(outputs.arr[output]);
   }
 
-  if (retVal != nullptr) *retVal = outputs;
+  if (retVal != nullptr) *retVal = outputs.arr;
 }
 
 //--------------------------------------------------
@@ -94,51 +102,51 @@ void Layer::BackPropOutput(double* expected) const
   if (expected == nullptr)
     throw std::logic_error("Invalid argument -> Layer::BackPropOutput(...)");
 
-  int out;
+  int output;
 
-  for (out = 0; out < numberOfOutputs; ++out)
+  for (output = 0; output < numberOfOutputs; ++output)
   {
-    error[out] = outputs[out] - expected[out];
-    gamma[out] = error[out] * DeriveFunction(outputs[out]);
+    error.arr[output] = outputs.arr[output] - expected[output];
+    gamma.arr[output] = error.arr[output] * DeriveFunction(outputs.arr[output]);
   }
 
-  for (out = 0; out < numberOfOutputs; ++out)
-    for (auto in = 0; in < numberOfInputs; ++in)
-      weightsDelta[out * numberOfInputs + in] = gamma[out] * inputs[in];
+  for (output = 0; output < numberOfOutputs; ++output)
+    for (auto input = 0; input < numberOfInputs; ++input)
+      weightsDelta.arr[output * numberOfInputs + input] = gamma.arr[output] * inputs.arr[input];
 }
 
 //--------------------------------------------------
-void Layer::BackPropHidden(double* gammaForward, double* weightsForward) const
+void Layer::BackPropHidden(struct DoubleArray gammaForward, struct DoubleArray weightsForward) const
 //--------------------------------------------------
 {
   // Checking inputs
-  if (gammaForward == nullptr || weightsForward == nullptr)
+  if (gammaForward.arr == nullptr || weightsForward.arr == nullptr)
     throw std::logic_error("Invalid argument -> Layer::BackPropHidden(...)");
 
-  int out, in;
+  int output, input;
 
-  for (out = 0; out < numberOfOutputs; ++out)
+  for (output = 0; output < numberOfOutputs; ++output)
   {
-    gamma[out] = 0;
+    gamma.arr[output] = 0;
 
-    for (in = 0; in < static_cast<int>(_msize(gammaForward)) / static_cast<int>(sizeof(double)); ++in)
-      gamma[out] += gammaForward[in] * weightsForward[in * numberOfOutputs + out];
+    for (input = 0; input < gammaForward.size; ++input)
+      gamma.arr[output] += gammaForward.arr[input] * weightsForward.arr[input * numberOfOutputs + output];
 
-    gamma[out] *= DeriveFunction(outputs[out]);
+    gamma.arr[output] *= DeriveFunction(outputs.arr[output]);
   }
 
-  for (out = 0; out < numberOfOutputs; ++out)
-    for (in = 0; in < numberOfInputs; ++in)
-      weightsDelta[out * numberOfInputs + in] = gamma[out] * inputs[in];
+  for (output = 0; output < numberOfOutputs; ++output)
+    for (input = 0; input < numberOfInputs; ++input)
+      weightsDelta.arr[output * numberOfInputs + input] = gamma.arr[output] * inputs.arr[input];
 }
 
 //--------------------------------------------------
 void Layer::UpdateWeights() const
 //--------------------------------------------------
 {
-  for (auto out = 0; out < numberOfOutputs; ++out)
-    for (auto in = 0; in < numberOfInputs; ++in)
-      weights[out * numberOfInputs + in] -= weightsDelta[out * numberOfInputs + in] * learningRate;
+  for (auto output = 0; output < numberOfOutputs; ++output)
+    for (auto input = 0; input < numberOfInputs; ++input)
+      weights.arr[output * numberOfInputs + input] -= weightsDelta.arr[output * numberOfInputs + input] * learningRate;
 }
 
 #pragma endregion

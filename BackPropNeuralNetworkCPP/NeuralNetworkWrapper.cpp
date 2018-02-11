@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "NeuralNetworkWrapper.h"
 
-
 #pragma region Constructor
 
 //--------------------------------------------------
@@ -36,7 +35,7 @@ void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* e
   int* layer = pNN->layer;
 
   std::vector<double *> _trainingData;
-    std::vector<double *> _expectedData;
+  std::vector<double *> _expectedData;
 
   // Converting data
   _trainingData = ConvertToVectorDouble(trainingData, dataSetSize, layer[0], _trainingData);
@@ -46,9 +45,9 @@ void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* e
   pNN->TrainNetwork(_trainingData, _expectedData, iterations);
 
   // Freeing memmory
-  for (auto i = 0; i < _trainingData.size(); ++i)
+  for (auto i = 0; i < (int)_trainingData.size(); ++i)
     free(_trainingData[i]);
-  for (auto i = 0; i < _expectedData.size(); ++i)
+  for (auto i = 0; i < (int)_expectedData.size(); ++i)
     free(_expectedData[i]);
 }
 
@@ -117,11 +116,10 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
   for (int i = 0; i < pNN->layersLength; i++)
   {
     exportFile << "layer " << i << " - inputs";
-    pNN->layers[i].inputs;
 
     for (int j = 0; j < _layer[i]; j++)
     {
-      ss << pNN->layers[i].inputs[j];
+      ss << pNN->layers[i].inputs.arr[j];
 
       if (j + 1 == _layer[i])
         ss << ";";
@@ -132,7 +130,7 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
 
     for (int j = 0; j < _layer[i + 1]; j++)
     {
-      ss << pNN->layers[i].outputs[j];
+      ss << pNN->layers[i].outputs.arr[j];
 
       if (j + 1 == _layer[i])
         ss << ";";
@@ -143,7 +141,7 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
 
     for (int j = 0; j < _layer[i + 1]; j++)
     {
-      ss << pNN->layers[i].outputs[j];
+      ss << pNN->layers[i].outputs.arr[j];
 
       if (j + 1 == _layer[i])
         ss << ";";
@@ -154,7 +152,7 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
 
     for (int j = 0; j < _layer[i + 1]; j++)
     {
-      ss << pNN->layers[i].gamma[j];
+      ss << pNN->layers[i].gamma.arr[j];
 
       if (j + 1 == _layer[i])
         ss << ";";
@@ -165,7 +163,7 @@ void Wrapper::NeuralNetworkWrapper::ExportCSV()
 
     for (int j = 0; j < _layer[i + 1]; j++)
     {
-      ss << pNN->layers[i].error[j];
+      ss << pNN->layers[i].error.arr[j];
 
       if (j + 1 == _layer[i])
         ss << ";";

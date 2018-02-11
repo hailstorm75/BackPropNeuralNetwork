@@ -149,6 +149,7 @@ namespace NetworkBenchmarking
           Minimum = int.Parse(InputMinimum),
           Maximum = int.Parse(InputMaximum),
           Iterations = (int)InputIterations,
+          Tolerance = 95,
           Operation = (DataGenerator.Operation)OperationType
         });
 

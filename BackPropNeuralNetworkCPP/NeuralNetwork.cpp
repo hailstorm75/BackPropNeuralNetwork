@@ -67,10 +67,10 @@ void NeuralNetwork::FeedForward(double* inputs, double** retVal)
   layers[0].FeedForward(inputs);
 
   for (auto l = 1; l < layersLength; l++)
-    layers[l].FeedForward(layers[l - 1].outputs);
+    layers[l].FeedForward(layers[l - 1].outputs.arr);
 
   if (retVal != nullptr)
-    *retVal = layers[layersLength - 1].outputs;
+    *retVal = layers[layersLength - 1].outputs.arr;
 }
 
 //--------------------------------------------------

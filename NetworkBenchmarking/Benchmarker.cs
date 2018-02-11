@@ -111,7 +111,7 @@ namespace NetworkBenchmarking
           }
 
           // Evaluating gathered information
-          net.OutputTestResult(ref totalError, ref stable);
+          net.OutputTestResult(ref totalError, ref stable, _settings.Tolerance);
           // Clearing memory
           net.Clear();
 

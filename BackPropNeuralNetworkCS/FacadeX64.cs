@@ -149,7 +149,7 @@ namespace NeuralNetworkFacadeCS
     /// <param name="totalError">Average error for the dataset</param>
     /// <param name="stability">True if the prediction accuracy is greater or equals to 95</param>
     //--------------------------------------------------
-    public void OutputTestResult(ref double totalError, ref bool stability)
+    public void OutputTestResult(ref double totalError, ref bool stability, double tolerance)
     //--------------------------------------------------
     {
       if (_mode == Mode.WithTraining)
@@ -172,8 +172,7 @@ namespace NeuralNetworkFacadeCS
         }
 
         var e = 1 - error / _expectedData.Length;
-        var accuracy = 100 * e;
-        var success = accuracy >= 95.0;
+        var success = 100 * e >= tolerance;
 
         stability &= success;
         totalError += e;

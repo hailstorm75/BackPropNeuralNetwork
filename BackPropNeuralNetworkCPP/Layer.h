@@ -9,12 +9,18 @@ class Layer
 public:
 #pragma region Fields
 
-  double* outputs;
-  double* inputs;
-  double* weights;
-  double* weightsDelta;
-  double* gamma;
-  double* error;
+  typedef struct DoubleArray
+  {
+    double * arr;
+    int size;
+  } TDOUBLEARRAY;
+
+  struct DoubleArray outputs;
+  struct DoubleArray inputs;
+  struct DoubleArray weights;
+  struct DoubleArray weightsDelta;
+  struct DoubleArray gamma;
+  struct DoubleArray error;
 
 #pragma endregion
 
@@ -78,7 +84,7 @@ public:
   * \param gammaForward
   * \param weightsForward
   */
-  void BackPropHidden(double* gammaForward, double* weightsForward) const;
+  void BackPropHidden(struct DoubleArray gammaForward, struct DoubleArray weightsForward) const;
 
 #pragma endregion
 

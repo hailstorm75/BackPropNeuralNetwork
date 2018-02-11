@@ -16,69 +16,41 @@ namespace BackPropNeuralNetworkCPPTests
 #pragma region Constructor
 
     //--------------------------------------------------
-    TEST_METHOD(LayerTestConstructor_inputs)
+    TEST_METHOD(LayerTestConstructor_inputsA)
     //--------------------------------------------------
     {
-      auto numberOfInputs = 10;
-      auto numberOfOutputs = 10;
-      Layer layer(numberOfInputs, numberOfOutputs);
+      auto numberOfInputs = 0;
+      auto numberOfOutputs = 0;
+      bool caughtExceotion = false;
+      try
+      {
+        Layer layer(numberOfInputs, numberOfOutputs);
+      }
+      catch (const std::exception&)
+      {
+        caughtExceotion = true;
+      }
 
-      Assert::IsTrue(_msize(layer.inputs) / sizeof(layer.inputs) == numberOfInputs);
+      Assert::IsTrue(caughtExceotion);
     }
 
     //--------------------------------------------------
-    TEST_METHOD(LayerTestConstructor_outputs)
+    TEST_METHOD(LayerTestConstructor_inputsB)
     //--------------------------------------------------
     {
-      auto numberOfInputs = 10;
-      auto numberOfOutputs = 10;
-      Layer layer(numberOfInputs, numberOfOutputs);
+      auto numberOfInputs = -10;
+      auto numberOfOutputs = -10;
+      bool caughtExceotion = false;
+      try
+      {
+        Layer layer(numberOfInputs, numberOfOutputs);
+      }
+      catch (const std::exception&)
+      {
+        caughtExceotion = true;
+      }
 
-      Assert::IsTrue(_msize(layer.outputs) / sizeof(layer.outputs) == numberOfOutputs);
-    }
-
-    //--------------------------------------------------
-    TEST_METHOD(LayerTestConstructor_gamma)
-    //--------------------------------------------------
-    {
-      auto numberOfInputs = 10;
-      auto numberOfOutputs = 10;
-      Layer layer(numberOfInputs, numberOfOutputs);
-
-      Assert::IsTrue(_msize(layer.gamma) / sizeof(layer.gamma) == numberOfOutputs);
-    }
-
-    //--------------------------------------------------
-    TEST_METHOD(LayerTestConstructor_error)
-    //--------------------------------------------------
-    {
-      auto numberOfInputs = 10;
-      auto numberOfOutputs = 10;
-      Layer layer(numberOfInputs, numberOfOutputs);
-
-      Assert::IsTrue(_msize(layer.error) / sizeof(layer.error) == numberOfOutputs);
-    }
-
-    //--------------------------------------------------
-    TEST_METHOD(LayerTestConstructor_weights)
-    //--------------------------------------------------
-    {
-      auto numberOfInputs = 10;
-      auto numberOfOutputs = 10;
-      Layer layer(numberOfInputs, numberOfOutputs);
-
-      Assert::IsTrue(_msize(layer.weights) / sizeof(layer.weights) == numberOfOutputs * numberOfInputs);
-    }
-
-    //--------------------------------------------------
-    TEST_METHOD(LayerTestConstructor_weightsDelta)
-    //--------------------------------------------------
-    {
-      auto numberOfInputs = 10;
-      auto numberOfOutputs = 10;
-      Layer layer(numberOfInputs, numberOfOutputs);
-
-      Assert::IsTrue(_msize(layer.weightsDelta) / sizeof(layer.weightsDelta) == numberOfOutputs * numberOfInputs);
+      Assert::IsTrue(caughtExceotion);
     }
 
 #pragma endregion
@@ -132,10 +104,11 @@ namespace BackPropNeuralNetworkCPPTests
       Layer layer(1, 1);
 
       bool caughtException;
+      struct Layer::DoubleArray a;
 
       try
       {
-        layer.BackPropHidden(nullptr, nullptr);
+        layer.BackPropHidden(a, a);
         caughtException = false;
       }
       catch (std::logic_error)
