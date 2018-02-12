@@ -55,8 +55,8 @@ namespace NetworkBenchmarking
 
       try
       {
-        for (var hiddenSet = _settings.Minimum; hiddenSet <= _settings.Maximum; ++hiddenSet)
-          await TestNetwork(hiddenSet);
+        foreach (var item in _settings.HiddenLayerDefinitions)
+          await TestNetwork(item);       
       }
       catch (OperationCanceledException)
       {
@@ -72,7 +72,7 @@ namespace NetworkBenchmarking
     /// </summary>
     /// <param name="hidden">Set of hidden layers</param>
     //--------------------------------------------------
-    private static async Task TestNetwork(int hidden)
+    private static async Task TestNetwork(HiddenLayerDefinition definition)
     //--------------------------------------------------
     {
       // Test success
@@ -85,7 +85,11 @@ namespace NetworkBenchmarking
       await Task.Run(() =>
       {
         // Getting hidden layer definition
-        var layers = new[] { _settings.Inputs, hidden, _settings.Outputs };
+        var layers = new int[2 + definition.LayerCount];
+        layers[0] = _settings.Inputs;
+        for (int i = 1; i < definition.LayerCount + 1; ++i)
+          layers[i] = definition.NeuronCount;
+        layers[1 + definition.LayerCount] = _settings.Outputs;
 
         // Testing network
         for (var j = 0; j < _settings.Iterations; ++j)
@@ -126,13 +130,13 @@ namespace NetworkBenchmarking
       // Test summary
       _stat.Report(new BenchmarkData
       {
-        Neurons = new[] { hidden },
+        HiddenNeurons = definition,
         Error = totalError / _settings.Iterations,
         Stable = stable
       });
 
       // Update progress
-      _prg.Report(new Tuple<double, bool>(100 / _settings.ProgressTick * hidden, false));
+      //_prg.Report(new Tuple<double, bool>(100 / _settings.ProgressTick / _settings.Iterations, false));
     }
 
     #endregion

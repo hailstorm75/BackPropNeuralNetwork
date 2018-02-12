@@ -11,6 +11,8 @@ namespace NetworkBenchmarking
   {
     #region Properties
 
+    public List<HiddenLayerDefinition> HiddenLayerDefinitions { get; set; }
+
     /// <summary>
     /// Binding property to set selected operation type
     /// </summary>
@@ -32,10 +34,6 @@ namespace NetworkBenchmarking
     /// Binding property to set cancel button enabled state
     /// </summary>
     public bool ButtonCancelEnabled { get { return !UIEnabled; } }
-    /// <summary>
-    /// Binding property to set popup state
-    /// </summary>
-    public bool ToggleAddChecked { get; set; }
 
     /// <summary>
     /// Binding property to display progress
@@ -74,6 +72,8 @@ namespace NetworkBenchmarking
     #endregion
 
     #region Commands
+
+    public ICommand DeleteLayerCommand { get; set; }
 
     /// <summary>
     /// Runs the benchmark
@@ -121,13 +121,41 @@ namespace NetworkBenchmarking
     public BenchmarkerViewModel()
     //--------------------------------------------------
     {
+      DeleteLayerCommand = new RelayCommand(DeleteLayer);
       RunBenchmarkCommand = new RelayCommand(RunBenchmark);
       CancelOperationCommand = new RelayCommand(CancelOperation);
+      HiddenLayerDefinitions = new List<HiddenLayerDefinition> {
+        new HiddenLayerDefinition {
+          LayerDefinitions = new List<LayerDefinition> {
+            new LayerDefinition { Neurons = 12 },
+          },
+          LayerCount = 1
+        },
+        new HiddenLayerDefinition {
+          LayerDefinitions = new List<LayerDefinition> {
+            new LayerDefinition { Neurons = 6 },
+            new LayerDefinition { Neurons = 6 }
+          },
+          LayerCount = 2
+        },
+        new HiddenLayerDefinition {
+          LayerDefinitions = new List<LayerDefinition> {
+            new LayerDefinition { Neurons = 4 },
+            new LayerDefinition { Neurons = 6 },
+            new LayerDefinition { Neurons = 4 },
+          },
+          LayerCount = 3
+        }
+      };
     }
 
     #endregion
 
     #region Methods
+
+    //--------------------------------------------------
+    private void DeleteLayer() => OutputLog += "Delete pressed\n";
+    //--------------------------------------------------
 
     /// <summary>
     /// Runs the benchmark based on given settings
@@ -146,8 +174,7 @@ namespace NetworkBenchmarking
         {
           Inputs = int.Parse(InputInputs),
           Outputs = int.Parse(InputOutputs),
-          Minimum = int.Parse(InputMinimum),
-          Maximum = int.Parse(InputMaximum),
+          HiddenLayerDefinitions = this.HiddenLayerDefinitions,
           Iterations = (int)InputIterations,
           Tolerance = 95,
           Operation = (DataGenerator.Operation)OperationType
@@ -183,7 +210,7 @@ namespace NetworkBenchmarking
     //--------------------------------------------------
     private void CancelOperation() => _ct?.Cancel();
     //--------------------------------------------------
-    
+
     /// <summary>
     /// Prevents window from closing if benchmark is running
     /// </summary>
@@ -224,9 +251,9 @@ namespace NetworkBenchmarking
           if (_benchmarkData.Count != 0)
           {
             var byAccuracy = _benchmarkData.Select(x => x).OrderByDescending(x => x.Error).First();
-            OutputLog += $"Most accurate:\n\tNeurons - {string.Join(",", byAccuracy.Neurons)}\n\tError - {byAccuracy.Error}\n";
-            var byNeurons = _benchmarkData.Select(x => x).OrderBy(x => x.Neurons.Sum()).First();
-            OutputLog += $"Least neurons:\n\tNeurons - {string.Join(",", byNeurons.Neurons)}\n\tError - {byNeurons.Error}";
+            OutputLog += $"Most accurate:\n  Neurons - {string.Join(", ", byAccuracy.HiddenNeurons.LayerDefinitions.Select(x => x.Neurons).ToArray())}\n  Average error - {byAccuracy.Error}\n";
+            var byNeurons = _benchmarkData.Select(x => x).OrderBy(x => x.HiddenNeurons.NeuronCount).First();
+            OutputLog += $"Least neurons:\n  Neurons - {string.Join(", ", byNeurons.HiddenNeurons.LayerDefinitions.Select(x => x.Neurons).ToArray())}\n  Average error - {byNeurons.Error}";
           }
           else OutputLog += "No stable networks generated.";
           break;
@@ -251,7 +278,7 @@ namespace NetworkBenchmarking
     //--------------------------------------------------
     {
       if (b.Stable) _benchmarkData.Add(b);
-      OutputLog += $"Hidden neurons: {string.Join(",", b.Neurons)}\nStability: {(b.Stable ? "Stable" : "Unstable")}\nError: {b.Error}\n\n";
+      OutputLog += $"Hidden neurons: {string.Join(", ", b.HiddenNeurons.LayerDefinitions.Select(x => x.Neurons).ToArray())}\nStability: {(b.Stable ? "Stable" : "Unstable")}\nAverage error: {b.Error}\n\n";
     }
 
     #endregion
