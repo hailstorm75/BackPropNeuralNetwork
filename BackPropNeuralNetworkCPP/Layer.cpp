@@ -14,17 +14,17 @@ Layer::Layer(int numberOfInputs, int numberOfOutputs)
   this->numberOfOutputs = numberOfOutputs;
 
   // 1D Arrays
-  outputs.arr = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
+  outputs.arr = new double[this->numberOfOutputs];
   outputs.size = this->numberOfOutputs;
-  gamma.arr = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
+  gamma.arr = new double[this->numberOfOutputs];
   gamma.size = this->numberOfOutputs;
-  error.arr = static_cast<double *>(malloc(this->numberOfOutputs * sizeof(double)));
+  error.arr = new double[this->numberOfOutputs];
   error.size = this->numberOfOutputs;
 
   // 2D Arrays
-  weights.arr = static_cast<double *>(malloc(this->numberOfOutputs * this->numberOfInputs * sizeof(double)));
+  weights.arr = new double[this->numberOfOutputs * this->numberOfInputs];
   weights.size = this->numberOfInputs;
-  weightsDelta.arr = static_cast<double *>(malloc(this->numberOfOutputs * this->numberOfInputs * sizeof(double)));
+  weightsDelta.arr = new double[this->numberOfOutputs * this->numberOfInputs];
   weightsDelta.size = this->numberOfInputs;
 
   InitilizeWeights();
@@ -34,11 +34,11 @@ Layer::Layer(int numberOfInputs, int numberOfOutputs)
 void Layer::Clear() const
 //--------------------------------------------------
 {
-  free(outputs.arr);
-  free(gamma.arr);
-  free(error.arr);
-  free(weights.arr);
-  free(weightsDelta.arr);
+  delete [] outputs.arr;
+  delete [] gamma.arr;
+  delete [] error.arr;
+  delete [] weights.arr;
+  delete [] weightsDelta.arr;
 }
 
 #pragma endregion 

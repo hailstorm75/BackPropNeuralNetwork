@@ -45,10 +45,8 @@ void Wrapper::NeuralNetworkWrapper::TrainNetwork(double* trainingData, double* e
   pNN->TrainNetwork(_trainingData, _expectedData, iterations);
 
   // Freeing memmory
-  for (auto i = 0; i < (int)_trainingData.size(); ++i)
-    free(_trainingData[i]);
-  for (auto i = 0; i < (int)_expectedData.size(); ++i)
-    free(_expectedData[i]);
+  for (auto i = 0; i < (int)_trainingData.size(); ++i) delete [] _trainingData[i];
+  for (auto i = 0; i < (int)_expectedData.size(); ++i) delete [] _expectedData[i];
 }
 
 //--------------------------------------------------
@@ -68,7 +66,7 @@ std::vector<double*> Wrapper::NeuralNetworkWrapper::ConvertToVectorDouble(double
   // TODO Avoid copying data, resolve with pointers
   for (auto i = 0; i < rows; i++)
   {
-    output.push_back(static_cast<double*>(malloc(columns * sizeof(double))));
+    output.push_back(new double[columns]);
 
     for (auto j = 0; j < columns; j++)
       output[output.size() - 1][j] = input[i * columns + j];

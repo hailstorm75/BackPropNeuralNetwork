@@ -1,8 +1,6 @@
 #include "NeuralNetwork.h"
-#include <iostream>
 #include <fstream>
 #include <sstream>
-#include <memory>
 
 using namespace System;
 
