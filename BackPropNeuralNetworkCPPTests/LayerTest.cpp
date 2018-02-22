@@ -105,6 +105,7 @@ namespace BackPropNeuralNetworkCPPTests
 
       bool caughtException;
       struct Layer::DoubleArray a;
+      a.arr = nullptr;      
 
       try
       {

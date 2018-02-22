@@ -216,7 +216,7 @@ namespace NetworkBenchmarking
     /// </summary>
     /// <param name="e">Closing event</param>
     //--------------------------------------------------
-    public void CloseWindow(System.ComponentModel.CancelEventArgs e)
+    public override void CloseWindow(System.ComponentModel.CancelEventArgs e)
     //--------------------------------------------------
     {
       if (_benchmarkRunning)

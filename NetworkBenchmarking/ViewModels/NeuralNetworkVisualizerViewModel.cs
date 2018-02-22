@@ -9,6 +9,7 @@ namespace NetworkBenchmarking
 
     public NeuralNetworkVisualizerViewModel()
     {
+
     }
   }
 }

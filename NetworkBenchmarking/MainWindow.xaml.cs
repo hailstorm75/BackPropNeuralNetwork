@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace NetworkBenchmarking
 {
@@ -9,8 +10,9 @@ namespace NetworkBenchmarking
   {
     #region Properties
 
-    private BenchmarkerViewModel ViewModel { get; set; } 
-    
+    private BenchmarkerViewModel ViewModel { get; set; }
+    private BenchmarkPage CurrentPage { get; set; }
+
     #endregion
 
     //--------------------------------------------------
@@ -19,14 +21,14 @@ namespace NetworkBenchmarking
     {
       InitializeComponent();
 
-      ViewModel = new BenchmarkerViewModel();
-      DataContext = ViewModel;     
+      CurrentPage = new BenchmarkPage();
+      this.Content = CurrentPage;
     }
 
     #region Events
 
     //--------------------------------------------------
-    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => ViewModel.CloseWindow(e);
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => CurrentPage.CloseWindow(e);
     //-------------------------------------------------- 
     
     #endregion

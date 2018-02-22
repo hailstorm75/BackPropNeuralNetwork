@@ -7,5 +7,7 @@ namespace NetworkBenchmarking
   public class BaseViewModel : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
+
+    public virtual void CloseWindow(System.ComponentModel.CancelEventArgs e) { }
   }
 }
