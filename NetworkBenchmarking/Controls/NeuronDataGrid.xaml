@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="NetworkBenchmarking.NeuronDataGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NetworkBenchmarking"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+    <DataGrid x:Name="dataGrid" ItemsSource="{Binding HiddenLayerDefinitions}" HorizontalScrollBarVisibility="Disabled" Margin="10, 0, 10, 0" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" SelectionUnit="FullRow" AutoGenerateColumns="False" AlternatingRowBackground="#FFDEDEDE">
+      <DataGrid.Columns>
+        <DataGridTextColumn Width="*" Header="Layer Count" Binding="{Binding LayerCount}"/>
+        <DataGridTextColumn Width="*" Header="Neuron Count" Binding="{Binding NeuronCount}"/>
+      </DataGrid.Columns>
+      <DataGrid.RowDetailsTemplate>
+        <DataTemplate>
+          <StackPanel>
+            <DockPanel>
+              <Button Content="Add" CommandParameter="8" Command="{Binding AddLayerCommand}" DockPanel.Dock="Left" Margin="5"/>
+              <TextBox DockPanel.Dock="Right" Margin="5"/>
+            </DockPanel>
+            <ListView ItemsSource="{Binding LayerDefinitions, Mode=TwoWay}">
+              <ListView.ItemTemplate>
+                <DataTemplate>
+                  <DockPanel>
+                    <Button Margin="10,0,0,0" IsEnabled="True" DockPanel.Dock="Left" Content="X" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}, Path= DataContext.DeleteLayerCommand}" CommandParameter="{Binding}" Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
+                    <StackPanel DockPanel.Dock="Left" Margin="10,0,0,0">
+                      <Button Content="/\" FontSize="8"/>
+                      <Button Content="\/" FontSize="8"/>
+                    </StackPanel>
+                    <Label Margin="10,0,0,0" DockPanel.Dock="Left" Content="Layer: "/>
+                    <Label DockPanel.Dock="Right" Content="{Binding Neurons}"/>
+                  </DockPanel>
+                </DataTemplate>
+              </ListView.ItemTemplate>
+            </ListView>
+          </StackPanel>
+        </DataTemplate>
+      </DataGrid.RowDetailsTemplate>
+    </DataGrid>
+  </Grid>
+</UserControl>

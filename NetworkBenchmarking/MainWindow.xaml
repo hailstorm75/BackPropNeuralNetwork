@@ -47,39 +47,7 @@
         <Slider x:Name="sld_iterations" Margin="10, 0, 10, 0" Minimum="5" Maximum="25" Value="{Binding InputIterations, Mode=TwoWay}" IsSnapToTickEnabled="True" TickFrequency="5"/>
         <!-- Network hidden -->
         <Label Content="Hidden layer definitions"/>
-        <Grid Width="{Binding ActualWidth, ElementName=toggleButton, Mode=OneWay}">
-          <DataGrid x:Name="dataGrid" HorizontalScrollBarVisibility="Disabled" Margin="10, 0, 10, 0" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" SelectionUnit="FullRow" AutoGenerateColumns="False" ItemsSource="{Binding HiddenLayerDefinitions}" AlternatingRowBackground="#FFDEDEDE">
-            <DataGrid.Columns>
-              <DataGridTextColumn Width="*" Header="Layer Count" Binding="{Binding LayerCount}"/>
-              <DataGridTextColumn Width="*" Header="Neuron Count" Binding="{Binding NeuronCount}"/>
-            </DataGrid.Columns>
-            <DataGrid.RowDetailsTemplate>
-              <DataTemplate>
-                <StackPanel>
-                  <DockPanel>
-                    <Button Content="Add" CommandParameter="8" Command="{Binding AddLayerCommand}" DockPanel.Dock="Left" Margin="5"/>
-                    <TextBox DockPanel.Dock="Right" Margin="5"/>
-                  </DockPanel>
-                  <ListView ItemsSource="{Binding LayerDefinitions, Mode=TwoWay}">
-                    <ListView.ItemTemplate>
-                      <DataTemplate>
-                        <DockPanel>
-                          <Button Margin="10,0,0,0" IsEnabled="True" DockPanel.Dock="Left" Content="X" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}, Path= DataContext.DeleteLayerCommand}" CommandParameter="{Binding}" Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
-                          <StackPanel DockPanel.Dock="Left" Margin="10,0,0,0">
-                            <Button Content="/\" FontSize="8"/>
-                            <Button Content="\/" FontSize="8"/>
-                          </StackPanel>
-                          <Label Margin="10,0,0,0" DockPanel.Dock="Left" Content="Layer: "/>
-                          <Label DockPanel.Dock="Right" Content="{Binding Neurons}"/>
-                        </DockPanel>
-                      </DataTemplate>
-                    </ListView.ItemTemplate>
-                  </ListView>
-                </StackPanel>
-              </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-          </DataGrid>
-        </Grid>
+        <local:NeuronDataGrid/>
         <!-- Dataset type -->
         <Label Content="Test data source"/>
         <TabControl IsSynchronizedWithCurrentItem="True" Margin="10, 0, 10, 0">
